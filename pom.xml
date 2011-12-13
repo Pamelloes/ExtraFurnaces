@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.dyndns.pamelloes</groupId>
-  <artifactId>Lifeless</artifactId>
+  <artifactId>SpoutFurnaces</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
@@ -22,16 +22,15 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-	  <groupId>org.bukkit</groupId>
-	  <artifactId>bukkit</artifactId>
-	  <version>1.0.0-R1-SNAPSHOT</version>
-	  <type>jar</type>
-	  <scope>compile</scope>
-    </dependency>
-    <dependency>
     	<groupId>org.getspout</groupId>
     	<artifactId>spoutapi</artifactId>
     	<version>dev-SNAPSHOT</version>
+    	<scope>compile</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.bukkit</groupId>
+    	<artifactId>bukkit</artifactId>
+    	<version>1.0.0-R1-20111212.183817-47</version>
     	<scope>compile</scope>
     </dependency>
   </dependencies>
