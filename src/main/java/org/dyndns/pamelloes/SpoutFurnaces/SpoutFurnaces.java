@@ -14,7 +14,6 @@ import org.dyndns.pamelloes.SpoutFurnaces.block.DiamondFurnace;
 import org.dyndns.pamelloes.SpoutFurnaces.block.GoldFurnace;
 import org.dyndns.pamelloes.SpoutFurnaces.block.IronFurnace;
 import org.getspout.spoutapi.SpoutManager;
-import org.getspout.spoutapi.block.design.GenericCubeBlockDesign;
 import org.getspout.spoutapi.block.design.Texture;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.inventory.SpoutShapedRecipe;
@@ -22,8 +21,8 @@ import org.getspout.spoutapi.material.CustomBlock;
 import org.getspout.spoutapi.material.MaterialData;
 
 public class SpoutFurnaces extends JavaPlugin {
-	int[] furnaceoff = {0,1,1,2,1,0};
-	int[] furnaceon = {0,4,4,4,3,0};
+	int[] furnaceoff = {0,2,1,1,1,0};
+	int[] furnaceon  = {0,3,4,4,4,0};
 	int ironfurnaceincr = 0;
 	int goldfurnaceincr = 5;
 	int diamondfurnaceincr = 10;
@@ -43,18 +42,9 @@ public class SpoutFurnaces extends JavaPlugin {
 	
 	private void registerItems() {
 		Texture texture = new Texture(this,"plugins/SpoutFurnaces/moreFurnaces.png",256,256,16);
-		
-		GenericCubeBlockDesign ironon = new GenericCubeBlockDesign(this,texture,incrementArray(furnaceon,ironfurnaceincr));
-		GenericCubeBlockDesign ironoff = new GenericCubeBlockDesign(this,texture,incrementArray(furnaceoff,ironfurnaceincr));
-		ironfurnace = new IronFurnace(this,ironon,ironoff);
-		
-		GenericCubeBlockDesign goldon = new GenericCubeBlockDesign(this,texture,incrementArray(furnaceon,goldfurnaceincr));
-		GenericCubeBlockDesign goldoff = new GenericCubeBlockDesign(this,texture,incrementArray(furnaceoff,goldfurnaceincr));
-		goldfurnace = new GoldFurnace(this,goldon,goldoff);
-		
-		GenericCubeBlockDesign diamondon = new GenericCubeBlockDesign(this,texture,incrementArray(furnaceon,diamondfurnaceincr));
-		GenericCubeBlockDesign diamondoff = new GenericCubeBlockDesign(this,texture,incrementArray(furnaceoff,diamondfurnaceincr));
-		diamondfurnace = new DiamondFurnace(this,diamondon,diamondoff);
+		ironfurnace = new IronFurnace(this, texture, incrementArray(furnaceon,ironfurnaceincr), incrementArray(furnaceoff,ironfurnaceincr));
+		goldfurnace = new GoldFurnace(this,texture, incrementArray(furnaceon,goldfurnaceincr), incrementArray(furnaceoff,goldfurnaceincr));
+		diamondfurnace = new DiamondFurnace(this, texture, incrementArray(furnaceon,diamondfurnaceincr), incrementArray(furnaceoff,diamondfurnaceincr));
 	}
 	
 	private void registerRecipes() {

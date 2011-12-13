@@ -5,13 +5,13 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.dyndns.pamelloes.SpoutFurnaces.SpoutFurnaces;
-import org.getspout.spoutapi.block.design.GenericCubeBlockDesign;
+import org.getspout.spoutapi.block.design.Texture;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class GoldFurnace extends CustomFurnace {
 
-	public GoldFurnace(SpoutFurnaces plugin, GenericCubeBlockDesign designon, GenericCubeBlockDesign designoff) {
-		super(plugin, "Gold Furnace", designon, designoff);
+	public GoldFurnace(SpoutFurnaces plugin, Texture texture, int[] designon, int[] designoff) {
+		super(plugin, "Gold Furnace", texture, designon, designoff);
 	}
 	
 	@Override
