@@ -46,6 +46,7 @@ public class CustomFurnace extends GenericCubeCustomBlock {
 
 	@Override
     public void onBlockPlace(World world, int x, int y, int z, LivingEntity living) {
+		System.out.println("BLOCK PLACE!");
 		int[][] positions = {
 				{x+1,z},
 				{x,z-1},
@@ -84,6 +85,9 @@ public class CustomFurnace extends GenericCubeCustomBlock {
 	@Override
     public boolean onBlockInteract(World world, int x, int y, int z, SpoutPlayer player) {
         //player.getMainScreen().attachPopupScreen(
+		System.out.println("BLOCK INTERACT!");
+		if(isOn()) turnOff();
+		else turnOn();
 		return true;
     }
 }
