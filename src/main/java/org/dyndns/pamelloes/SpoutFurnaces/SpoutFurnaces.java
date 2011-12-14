@@ -31,6 +31,9 @@ public class SpoutFurnaces extends JavaPlugin {
 	
 	public void onEnable() {
 		extractFile("moreFurnaces.png",true);
+		extractFile("ironfurnace.png",true);
+		extractFile("goldfurnace.png",true);
+		extractFile("diamondfurnace.png",true);
 		registerItems();
 		registerRecipes();
 	}

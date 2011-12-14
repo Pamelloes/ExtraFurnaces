@@ -10,7 +10,15 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 public class GoldFurnace extends CustomFurnace {
 
 	public GoldFurnace(SpoutFurnaces plugin, Texture texture, int[] designon, int[] designoff) {
-		super(plugin, "Gold Furnace", texture, designon, designoff);
+		super(plugin, "Gold Furnace", "plugins/SpoutFurnaces/goldfurnace.png", texture, designon, designoff);
+	}
+	
+	public int getTextureWidth() {
+		return 216;
+	}
+	
+	public int getTextureHeight() {
+		return 166;
 	}
 	
 	@Override

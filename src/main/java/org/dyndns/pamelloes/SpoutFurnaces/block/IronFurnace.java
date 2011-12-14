@@ -10,7 +10,15 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 public class IronFurnace extends CustomFurnace {
 
 	public IronFurnace(SpoutFurnaces plugin, Texture texture, int[] designon, int[] designoff) {
-		super(plugin, "Iron Furnace", texture, designon, designoff);
+		super(plugin, "Iron Furnace", "plugins/SpoutFurnaces/ironfurnace.png", texture, designon, designoff);
+	}
+	
+	public int getTextureWidth() {
+		return 176;
+	}
+	
+	public int getTextureHeight() {
+		return 166;
 	}
 	
 	@Override

@@ -10,7 +10,15 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 public class DiamondFurnace extends CustomFurnace {
 
 	public DiamondFurnace(SpoutFurnaces plugin, Texture texture, int[] designon, int[] designoff) {
-		super(plugin, "Diamond Furnace", texture, designon, designoff);
+		super(plugin, "Diamond Furnace", "plugins/SpoutFurnaces/diamondfurnace.png", texture, designon, designoff);
+	}
+	
+	public int getTextureWidth() {
+		return 216;
+	}
+	
+	public int getTextureHeight() {
+		return 202;
 	}
 	
 	@Override
