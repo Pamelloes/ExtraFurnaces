@@ -6,20 +6,18 @@ import org.dyndns.pamelloes.SpoutFurnaces.SpoutFurnaces;
 import org.dyndns.pamelloes.SpoutFurnaces.gui.CustomFurnaceGUI;
 import org.getspout.spoutapi.block.design.GenericCubeBlockDesign;
 import org.getspout.spoutapi.block.design.Texture;
-import org.getspout.spoutapi.gui.GenericTexture;
 import org.getspout.spoutapi.material.block.GenericCubeCustomBlock;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public abstract class CustomFurnace extends GenericCubeCustomBlock {
-	private SpoutFurnaces plugin;
+	protected SpoutFurnaces plugin;
 	private Texture texture;
 	private int[] idson, idsoff;
 	
-	private String texurl;
 	private GenericCubeBlockDesign desoff, deson;
 	private boolean on = false;
 	
-	public CustomFurnace(SpoutFurnaces plugin, String name, String texurl, Texture tex, int[] idson,int[] idsoff) {
+	public CustomFurnace(SpoutFurnaces plugin, String name, Texture tex, int[] idson,int[] idsoff) {
 		super(plugin, name, true, new GenericCubeBlockDesign(plugin, tex, idsoff));
 		desoff=(GenericCubeBlockDesign) getBlockDesign();
 		deson=new GenericCubeBlockDesign(plugin, tex, idson);
@@ -27,7 +25,6 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
 		this.idsoff=idsoff;
 		this.plugin=plugin;
 		texture=tex;
-		this.texurl=texurl;
 	}
 	
 	public void turnOn() {
@@ -83,18 +80,13 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
 		else setBlockDesign(desoff);
 	}
 	
-	public abstract int getTextureWidth();
-	public abstract int getTextureHeight();
+	public abstract CustomFurnaceGUI getGUI();
 
 	@Override
     public boolean onBlockInteract(World world, int x, int y, int z, SpoutPlayer player) {
 		if(isOn()) turnOff();
 		else turnOn();
-		org.getspout.spoutapi.gui.Texture tex = new GenericTexture();
-		tex.setUrl(texurl);
-		tex.setLeft(0).setTop(0).setWidth(getTextureWidth()).setHeight(166);
-		tex.setDrawAlphaChannel(true);
-		CustomFurnaceGUI cfg = new CustomFurnaceGUI(plugin, tex);
+		CustomFurnaceGUI cfg = getGUI();
 		cfg.attach(player);
 		return true;
     }

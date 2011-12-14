@@ -4,21 +4,15 @@ import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.dyndns.pamelloes.SpoutFurnaces.SpoutFurnaces;
+import org.dyndns.pamelloes.SpoutFurnaces.gui.CustomFurnaceGUI;
+import org.dyndns.pamelloes.SpoutFurnaces.gui.GoldFurnaceGUI;
 import org.getspout.spoutapi.block.design.Texture;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class IronFurnace extends CustomFurnace {
 
 	public IronFurnace(SpoutFurnaces plugin, Texture texture, int[] designon, int[] designoff) {
-		super(plugin, "Iron Furnace", "plugins/SpoutFurnaces/ironfurnace.png", texture, designon, designoff);
-	}
-	
-	public int getTextureWidth() {
-		return 176;
-	}
-	
-	public int getTextureHeight() {
-		return 166;
+		super(plugin, "Iron Furnace", texture, designon, designoff);
 	}
 	
 	@Override
@@ -45,4 +39,9 @@ public class IronFurnace extends CustomFurnace {
     public boolean isIndirectlyProvidingPowerTo(World world, int x, int y, int z, BlockFace face) {
         return false;
     }
+
+	@Override
+	public CustomFurnaceGUI getGUI() {
+		return new GoldFurnaceGUI(plugin);
+	}
 }
