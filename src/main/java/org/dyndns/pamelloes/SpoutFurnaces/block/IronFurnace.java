@@ -4,8 +4,8 @@ import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.dyndns.pamelloes.SpoutFurnaces.SpoutFurnaces;
-import org.dyndns.pamelloes.SpoutFurnaces.gui.CustomFurnaceGUI;
-import org.dyndns.pamelloes.SpoutFurnaces.gui.GoldFurnaceGUI;
+import org.dyndns.pamelloes.SpoutFurnaces.data.OpenGUI.GUIType;
+import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.design.Texture;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
@@ -19,16 +19,17 @@ public class IronFurnace extends CustomFurnace {
     public void onNeighborBlockChange(World world, int x, int y, int z, int changedId) { }
 
 	@Override
-    public void onBlockPlace(World world, int x, int y, int z) { }
-
-	@Override
-    public void onBlockDestroyed(World world, int x, int y, int z) { }
+    public void onBlockPlace(World world, int x, int y, int z) {
+		SpoutManager.getChunkDataManager().setBlockData("SpoutFurnaces", world, x, y, z, new IronFurnaceData(world.getUID(),x,y,z));
+	}
 
 	@Override
     public void onEntityMoveAt(World world, int x, int y, int z, Entity entity) { }
 
 	@Override
-    public void onBlockClicked(World world, int x, int y, int z, SpoutPlayer player) { }
+    public void onBlockClicked(World world, int x, int y, int z, SpoutPlayer player) {
+		System.out.println("Click!");
+	}
 
 	@Override
     public boolean isProvidingPowerTo(World world, int x, int y, int z, BlockFace face) {
@@ -41,7 +42,7 @@ public class IronFurnace extends CustomFurnace {
     }
 
 	@Override
-	public CustomFurnaceGUI getGUI() {
-		return new GoldFurnaceGUI(plugin);
+	public GUIType getGUIType() {
+		return GUIType.IronFurnace;
 	}
 }

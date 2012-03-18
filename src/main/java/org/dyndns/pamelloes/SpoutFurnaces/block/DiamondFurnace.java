@@ -4,8 +4,8 @@ import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.dyndns.pamelloes.SpoutFurnaces.SpoutFurnaces;
-import org.dyndns.pamelloes.SpoutFurnaces.gui.CustomFurnaceGUI;
-import org.dyndns.pamelloes.SpoutFurnaces.gui.DiamondFurnaceGUI;
+import org.dyndns.pamelloes.SpoutFurnaces.data.OpenGUI.GUIType;
+import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.design.Texture;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
@@ -19,10 +19,9 @@ public class DiamondFurnace extends CustomFurnace {
     public void onNeighborBlockChange(World world, int x, int y, int z, int changedId) { }
 
 	@Override
-    public void onBlockPlace(World world, int x, int y, int z) { }
-
-	@Override
-    public void onBlockDestroyed(World world, int x, int y, int z) { }
+    public void onBlockPlace(World world, int x, int y, int z) {
+		SpoutManager.getChunkDataManager().setBlockData("SpoutFurnaces", world, x, y, z, new DiamondFurnaceData(world.getUID(),x,y,z));
+	}
 
 	@Override
     public void onEntityMoveAt(World world, int x, int y, int z, Entity entity) { }
@@ -41,7 +40,7 @@ public class DiamondFurnace extends CustomFurnace {
     }
 
 	@Override
-	public CustomFurnaceGUI getGUI() {
-		return new DiamondFurnaceGUI(plugin);
+	public GUIType getGUIType() {
+		return GUIType.DiamondFurnace;
 	}
 }

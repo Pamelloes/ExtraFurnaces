@@ -1,11 +1,21 @@
 package org.dyndns.pamelloes.SpoutFurnaces.block;
 
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Set;
+
 import org.bukkit.World;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.IllegalPluginAccessException;
+import org.bukkit.plugin.RegisteredListener;
 import org.dyndns.pamelloes.SpoutFurnaces.SpoutFurnaces;
-import org.dyndns.pamelloes.SpoutFurnaces.gui.CustomFurnaceGUI;
+import org.dyndns.pamelloes.SpoutFurnaces.data.OpenGUI.GUIType;
+import org.dyndns.pamelloes.SpoutFurnaces.data.OpenGUIServer;
+import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.design.GenericCubeBlockDesign;
 import org.getspout.spoutapi.block.design.Texture;
+import org.getspout.spoutapi.io.AddonPacket;
 import org.getspout.spoutapi.material.block.GenericCubeCustomBlock;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
@@ -13,9 +23,7 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
 	protected SpoutFurnaces plugin;
 	private Texture texture;
 	private int[] idson, idsoff;
-	
 	private GenericCubeBlockDesign desoff, deson;
-	private boolean on = false;
 	
 	public CustomFurnace(SpoutFurnaces plugin, String name, Texture tex, int[] idson,int[] idsoff) {
 		super(plugin, name, true, new GenericCubeBlockDesign(plugin, tex, idsoff));
@@ -27,67 +35,51 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
 		texture=tex;
 	}
 	
-	public void turnOn() {
-		if(on) return;
-		setBlockDesign(deson);
-		on=true;
-	}
-	
-	public void turnOff() {
-		if(!on) return;
-		setBlockDesign(desoff);
-		on=false;
-	}
-	
-	public boolean isOn() {
-		return on;
-	}
-	
-
-	@Override
-    public void onBlockPlace(World world, int x, int y, int z, LivingEntity living) {
-		int[][] positions = {
-				{x+1,z},
-				{x,z-1},
-				{x-1,z},
-				{x,z+1}
-		};
-		int[] pos  = {living.getLocation().getBlockX(),living.getLocation().getBlockZ()};
-		
-		int face = 0;
-		double dist = -1;
-		for(int i=0; i<4;i++) {
-			double di = Math.sqrt(Math.pow(positions[i][0]+pos[0], 2) + Math.pow(positions[i][1] + pos[1], 2));
-			if(dist<0 || di<dist) {
-				dist = di;
-				face = i;
-			}
-		}
-		int critid = idson[1];
-		int normid = idson[2];
-		idson[1]=normid;
-		idson[face+1] = critid;
-		
-		critid = idsoff[1];
-		normid = idsoff[2];
-		idsoff[1]=normid;
-		idsoff[face+1] = critid;
-		
-		desoff = new GenericCubeBlockDesign(plugin, texture, idsoff);
-		deson = new GenericCubeBlockDesign(plugin, texture, idson);
-		
-		if(isOn()) setBlockDesign(deson);
-		else setBlockDesign(desoff);
-	}
-	
-	public abstract CustomFurnaceGUI getGUI();
+	public abstract GUIType getGUIType();
 
 	@Override
     public boolean onBlockInteract(World world, int x, int y, int z, SpoutPlayer player) {
-		if(isOn()) turnOff();
-		else turnOn();
-		CustomFurnaceGUI cfg = getGUI();
-		cfg.attach(player);
+		System.out.println("Interact!");
+		AddonPacket packet = new OpenGUIServer(getGUIType());
+		packet.send(player);
+		CustomFurnaceData dat = (CustomFurnaceData) SpoutManager.getChunkDataManager().getBlockData("SpoutFurnaces", world, x, y, z);
+		dat.onPlayerOpenFurnace(player);
+		plugin.map.put(player, dat);
 		return true;
+    }
+
+	@Override
+    public void onBlockDestroyed(World world, int x, int y, int z) {
+		CustomFurnaceData dat = (CustomFurnaceData) SpoutManager.getChunkDataManager().getBlockData("SpoutFurnaces", world, x, y, z);
+		if(dat==null) return;
+        for (Map.Entry<Class<? extends Event>, Set<RegisteredListener>> entry : plugin.getPluginLoader().createRegisteredListeners(dat, plugin).entrySet()) {
+           for(RegisteredListener r : entry.getValue()) getEventListeners(getRegistrationClass(entry.getKey())).unregister(r);
+        }
+		SpoutManager.getChunkDataManager().removeBlockData("SpoutFurnaces", world, x, y, z);
+	}
+
+    private Class<? extends Event> getRegistrationClass(Class<? extends Event> clazz) {
+        try {
+            clazz.getDeclaredMethod("getHandlerList");
+            return clazz;
+        } catch (NoSuchMethodException e) {
+            if (clazz.getSuperclass() != null
+                    && !clazz.getSuperclass().equals(Event.class)
+                    && Event.class.isAssignableFrom(clazz.getSuperclass())) {
+                return getRegistrationClass(clazz.getSuperclass().asSubclass(Event.class));
+            } else {
+                throw new IllegalPluginAccessException("Unable to find handler list for event " + clazz.getName());
+            }
+        }
+    }
+
+    private HandlerList getEventListeners(Class<? extends Event> type) {
+        try {
+            Method method = getRegistrationClass(type).getDeclaredMethod("getHandlerList");
+            method.setAccessible(true);
+            return (HandlerList) method.invoke(null);
+        } catch (Exception e) {
+            throw new IllegalPluginAccessException(e.toString());
+        }
     }
 }

@@ -3,24 +3,33 @@ package org.dyndns.pamelloes.SpoutFurnaces;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.dyndns.pamelloes.SpoutFurnaces.block.CustomFurnaceData;
 import org.dyndns.pamelloes.SpoutFurnaces.block.DiamondFurnace;
 import org.dyndns.pamelloes.SpoutFurnaces.block.GoldFurnace;
 import org.dyndns.pamelloes.SpoutFurnaces.block.IronFurnace;
+import org.dyndns.pamelloes.SpoutFurnaces.data.ChangeDataServer;
+import org.dyndns.pamelloes.SpoutFurnaces.data.ChangeInventoryServer;
+import org.dyndns.pamelloes.SpoutFurnaces.data.OpenGUIServer;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.design.Texture;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.inventory.SpoutShapedRecipe;
+import org.getspout.spoutapi.io.AddonPacket;
 import org.getspout.spoutapi.material.CustomBlock;
 import org.getspout.spoutapi.material.MaterialData;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class SpoutFurnaces extends JavaPlugin {
+	public Map<SpoutPlayer,CustomFurnaceData> map = new HashMap<SpoutPlayer, CustomFurnaceData>();
+	
 	int[] furnaceoff = {0,2,1,1,1,0};
 	int[] furnaceon  = {0,3,4,4,4,0};
 	int ironfurnaceincr = 0;
@@ -31,16 +40,16 @@ public class SpoutFurnaces extends JavaPlugin {
 	
 	public void onEnable() {
 		extractFile("moreFurnaces.png",true);
-		extractFile("ironfurnace.png",true);
-		extractFile("goldfurnace.png",true);
-		extractFile("diamondfurnace.png",true);
 		registerItems();
 		registerRecipes();
+		AddonPacket.register(OpenGUIServer.class, "OGUI");
+		AddonPacket.register(ChangeInventoryServer.class, "CInv");
+		AddonPacket.register(ChangeDataServer.class, "CData");
+		System.out.println("[SpoutFurnaces] enabled.");
 	}
 
 	public void onDisable() {
-		// TODO Auto-generated method stub
-		
+		System.out.println("[SpoutFurnaces] disabled.");
 	}
 	
 	private void registerItems() {
@@ -74,7 +83,7 @@ public class SpoutFurnaces extends JavaPlugin {
 	}
 	
 	public static int[] incrementArray(final int[] array,final int increment) {
-		int[] intarray = Arrays.copyOf(array, array.length);
+		int[] intarray = new int[array.length];
 		for(int i=0;i<array.length;i++) intarray[i]=array[i]+increment;
 		return intarray;
 	}
