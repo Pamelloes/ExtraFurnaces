@@ -1,6 +1,6 @@
 name: SpoutFurnaces
-version: 0.1
-description: This is an addon
+version: 0.9.1
+description: This addon provides more powerful furnaceas.
 authors: [Pamelloes]
 website: http://forums.getspout.org/threads/wip-spoutfurnaces.287/
 main: org.dyndns.pamelloes.SpoutFurnaces.client.SpoutFurnacesClient

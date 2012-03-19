@@ -19,6 +19,8 @@ public abstract class FurnaceGui extends InventoryGui{
     /** The number of ticks that the current item has been cooking for */
     public int furnaceCookTime;
     
+    public int itemBurnTime;
+    
     private String id;
 
 	public FurnaceGui(PopupScreen parent, int width, int height, String id) {
@@ -31,7 +33,7 @@ public abstract class FurnaceGui extends InventoryGui{
      * cooked
      */
     public int getCookProgressScaled(int par1) {
-        return (furnaceCookTime * par1) / 200;
+        return (furnaceCookTime * par1) / itemBurnTime;
     }
 
     /**
@@ -40,7 +42,7 @@ public abstract class FurnaceGui extends InventoryGui{
      */
     public int getBurnTimeRemainingScaled(int par1) {
         if (currentItemBurnTime == 0) {
-            currentItemBurnTime = 200;
+            currentItemBurnTime = itemBurnTime;
         }
 
         return (furnaceBurnTime * par1) / currentItemBurnTime;

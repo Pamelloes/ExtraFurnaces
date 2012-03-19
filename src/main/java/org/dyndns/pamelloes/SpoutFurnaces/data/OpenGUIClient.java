@@ -28,7 +28,6 @@ public class OpenGUIClient extends AddonPacket {
 
 	@Override
 	public void run() {
-		System.out.println("OPEN!");
 		Addon addon = Spoutcraft.getAddonManager().getAddon("SpoutFurnaces");
 		if(addon==null) throw new RuntimeException("SpoutFurnaces is somehow not loaded... how is this code running?");
 		if(!(addon instanceof SpoutFurnacesClient)) throw new RuntimeException("SpoutFurnaces is an imposter! Or this code is outdated. Possibly both. ;)");

@@ -26,6 +26,7 @@ public class ChangeDataClient extends AddonPacket {
 
 	@Override
 	public void run() {
+		if(FurnaceGui.current == null) return;
 		FurnaceGui.current.currentItemBurnTime=currentItemBurnTime;
 		FurnaceGui.current.furnaceBurnTime=furnaceBurnTime;
 		FurnaceGui.current.furnaceCookTime=furnaceCookTime;

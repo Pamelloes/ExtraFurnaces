@@ -27,14 +27,14 @@ public class GoldFurnaceGui extends FurnaceGui {
 		//fuel
 		addSlot(new InventorySlot(8,53));
 		addSlot(new InventorySlot(26,53));
-		addSlot(new InventorySlot(38,53));
-		addSlot(new InventorySlot(56,53));
+		addSlot(new InventorySlot(44,53));
+		addSlot(new InventorySlot(62,53));
 		//output
-		addSlot(new InventorySlot(110,35).setReadOnly(true));
-		addSlot(new InventorySlot(132,39).setReadOnly(true));
-		addSlot(new InventorySlot(150,39).setReadOnly(true));
-		addSlot(new InventorySlot(168,39).setReadOnly(true));
-		addSlot(new InventorySlot(186,39).setReadOnly(true));
+		addSlot(new InventorySlot(116,35).setReadOnly(true));
+		addSlot(new InventorySlot(138,39).setReadOnly(true));
+		addSlot(new InventorySlot(156,39).setReadOnly(true));
+		addSlot(new InventorySlot(174,39).setReadOnly(true));
+		addSlot(new InventorySlot(192,39).setReadOnly(true));
 	}
 
 	@Override

@@ -39,7 +39,6 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
 
 	@Override
     public boolean onBlockInteract(World world, int x, int y, int z, SpoutPlayer player) {
-		System.out.println("Interact!");
 		AddonPacket packet = new OpenGUIServer(getGUIType());
 		packet.send(player);
 		CustomFurnaceData dat = (CustomFurnaceData) SpoutManager.getChunkDataManager().getBlockData("SpoutFurnaces", world, x, y, z);

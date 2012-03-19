@@ -30,21 +30,21 @@ public class DiamondFurnaceGui extends FurnaceGui {
 		//fuel
 		addSlot(new InventorySlot(8,89));
 		addSlot(new InventorySlot(26,89));
-		addSlot(new InventorySlot(38,89));
-		addSlot(new InventorySlot(8,89));
+		addSlot(new InventorySlot(44,89));
+		addSlot(new InventorySlot(8,71));
 		addSlot(new InventorySlot(26,71));
-		addSlot(new InventorySlot(38,71));
-		addSlot(new InventorySlot(56,71));
+		addSlot(new InventorySlot(44,71));
+		addSlot(new InventorySlot(62,71));
 		//output
 		addSlot(new InventorySlot(116,53).setReadOnly(true));
 		addSlot(new InventorySlot(138,39).setReadOnly(true));
-		addSlot(new InventorySlot(154,39).setReadOnly(true));
-		addSlot(new InventorySlot(162,39).setReadOnly(true));
-		addSlot(new InventorySlot(190,39).setReadOnly(true));
+		addSlot(new InventorySlot(156,39).setReadOnly(true));
+		addSlot(new InventorySlot(174,39).setReadOnly(true));
+		addSlot(new InventorySlot(192,39).setReadOnly(true));
 		addSlot(new InventorySlot(138,57).setReadOnly(true));
-		addSlot(new InventorySlot(154,57).setReadOnly(true));
-		addSlot(new InventorySlot(162,57).setReadOnly(true));
-		addSlot(new InventorySlot(190,57).setReadOnly(true));
+		addSlot(new InventorySlot(156,57).setReadOnly(true));
+		addSlot(new InventorySlot(174,57).setReadOnly(true));
+		addSlot(new InventorySlot(192,57).setReadOnly(true));
 	}
 
 	@Override

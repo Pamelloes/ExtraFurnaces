@@ -10,7 +10,7 @@ import org.spoutcraft.spoutcraftapi.gui.GenericPopup;
 import org.spoutcraft.spoutcraftapi.gui.WidgetAnchor;
 
 public class InventoryWidget extends GenericPopup {
-	private InventoryGui gui;
+	private FurnaceGui gui;
 	
 	private static Listener<ScreenCloseEvent> listener = null;
 
@@ -33,12 +33,15 @@ public class InventoryWidget extends GenericPopup {
 		switch(type) {
 		case IronFurnace:
 			gui = new IronFurnaceGui(this);
+			gui.itemBurnTime = 150;
 			break;
 		case GoldFurnace:
 			gui = new GoldFurnaceGui(this);
+			gui.itemBurnTime = 80;
 			break;
 		case DiamondFurnace:
 			gui = new DiamondFurnaceGui(this);
+			gui.itemBurnTime = 40;
 			break;
 		default:
 			throw new RuntimeException("The server requested a GUI with an invalid id opened. The server or client is outdated.");
