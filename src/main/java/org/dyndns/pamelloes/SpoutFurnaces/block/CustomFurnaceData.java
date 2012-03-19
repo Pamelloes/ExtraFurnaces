@@ -256,8 +256,12 @@ public abstract class CustomFurnaceData implements Serializable, Listener {
         }, 1L);
     }
 	
-	protected void updateRange(int max, int min) {
-		for(int t = 0; (t < max - min) && (furnaceItemStacks[max] == null); t++) {
+    protected void updateRange(int max, int min) {
+    	updateRange(max,min, true);
+    }
+    
+	protected void updateRange(int max, int min, boolean fillLast) {
+		for(int t = 0; fillLast ? (t < max - min) && (furnaceItemStacks[max] == null) : t < 1; t++) {
 			for(int i = max; i > min; i--) {
 				if(furnaceItemStacks[i] == null && furnaceItemStacks[i-1] != null) {
 					furnaceItemStacks[i] = furnaceItemStacks[i-1];

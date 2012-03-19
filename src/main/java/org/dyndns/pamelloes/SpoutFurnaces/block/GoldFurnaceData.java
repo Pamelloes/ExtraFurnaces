@@ -37,7 +37,7 @@ public class GoldFurnaceData extends CustomFurnaceData {
 	public void onServerTick(ServerTickEvent e) {
 		boolean update = update();
 		if(update) {
-			if(furnaceItemStacks[getBurnIndex()] == null && furnaceItemStacks[getResultIndex()] != null) updateRange(getResultIndex() + 4, getResultIndex());
+			if(furnaceItemStacks[getBurnIndex()] == null && furnaceItemStacks[getResultIndex()] != null) updateRange(getResultIndex() + 4, getResultIndex(), false);
 			updateRange(getFuelIndex(), getFuelIndex() - 3);
 			updateRange(getBurnIndex(), getBurnIndex() - 3);
 			sendInventory();

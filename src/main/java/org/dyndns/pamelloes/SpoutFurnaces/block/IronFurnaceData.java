@@ -37,7 +37,7 @@ public class IronFurnaceData extends CustomFurnaceData {
 	public void onServerTick(ServerTickEvent e) {
 		boolean update = update();
 		if(update) {
-			if(furnaceItemStacks[getBurnIndex()] == null && furnaceItemStacks[getResultIndex()] != null) updateRange(getResultIndex() + 1, getResultIndex());
+			if(furnaceItemStacks[getBurnIndex()] == null && furnaceItemStacks[getResultIndex()] != null) updateRange(getResultIndex() + 1, getResultIndex(), false);
 			updateRange(getFuelIndex(), getFuelIndex() - 1);
 			updateRange(getBurnIndex(), getBurnIndex() - 1);
 			sendInventory();

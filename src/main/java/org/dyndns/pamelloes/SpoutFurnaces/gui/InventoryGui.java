@@ -154,7 +154,7 @@ public abstract class InventoryGui {
 					lines++;
 				}
 				tooltip = tooltip.trim();
-				drawTooltip(tooltip, (xpos - 240) + 8, lines * 6);
+				drawTooltip(tooltip, (mouseX - xpos) + 8, mouseY - ypos - lines * 6);
 				zLevel = 0.0F;
 				render.zLevel = 0.0F;
 			}
