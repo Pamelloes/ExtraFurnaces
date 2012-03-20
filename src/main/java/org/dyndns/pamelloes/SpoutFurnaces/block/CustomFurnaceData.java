@@ -78,6 +78,8 @@ public abstract class CustomFurnaceData implements Serializable, Listener {
         furnaceItemStacks[par1] = par2ItemStack;
 
         if (par2ItemStack != null && par2ItemStack.getAmount() > 64) par2ItemStack.setAmount(64);
+        
+		sendInventory();
     }
 
     /**

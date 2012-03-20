@@ -1,10 +1,6 @@
 package org.dyndns.pamelloes.SpoutFurnaces.data;
 
-import java.util.Map;
-
-import org.bukkit.Bukkit;
 import org.dyndns.pamelloes.SpoutFurnaces.SpoutFurnaces;
-import org.dyndns.pamelloes.SpoutFurnaces.block.CustomFurnaceData;
 import org.dyndns.pamelloes.SpoutFurnaces.data.OpenGUI.GUIType;
 import org.getspout.spoutapi.io.AddonPacket;
 import org.getspout.spoutapi.io.SpoutInputStream;
@@ -39,9 +35,8 @@ public class OpenGUIServer extends AddonPacket {
 	@Override
 	public void run(SpoutPlayer arg0) {
 		if(!type.equals(GUIType.CloseGui)) return;
-		Map<SpoutPlayer, CustomFurnaceData> map = ((SpoutFurnaces) Bukkit.getPluginManager().getPlugin("SpoutFurnaces")).map;
-		map.get(arg0).onPlayerCloseFurnace(arg0);
-		map.remove(arg0);
+		SpoutFurnaces.map.get(arg0).onPlayerCloseFurnace(arg0);
+		SpoutFurnaces.map.remove(arg0);
 	}
 
 	@Override

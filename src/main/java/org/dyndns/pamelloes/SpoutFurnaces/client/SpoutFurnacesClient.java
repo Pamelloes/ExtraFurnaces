@@ -21,7 +21,6 @@ public class SpoutFurnacesClient extends JavaAddon {
 	public void onEnable() {
 		try {
 			ClassLoader cl = createClassLoader();
-			System.out.println(cl.getClass());
 			Class<? extends AddonPacket> clazz = (Class<? extends AddonPacket>) cl.loadClass("org.dyndns.pamelloes.SpoutFurnaces.data.OpenGUIClient");
 			AddonPacket.register(clazz, "OGUI");
 			clazz = (Class<? extends AddonPacket>) cl.loadClass("org.dyndns.pamelloes.SpoutFurnaces.data.ChangeInventoryClient");
@@ -37,6 +36,7 @@ public class SpoutFurnacesClient extends JavaAddon {
 		extractFile("diamondfurnace.png");
 		
 		isEnabled=true;
+		
 		
 	}
 	

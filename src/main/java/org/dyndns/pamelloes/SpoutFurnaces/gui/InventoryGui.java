@@ -209,15 +209,36 @@ public abstract class InventoryGui {
 	}
 	
 	public void setContents(int id, ItemStack contents) {
+		setContents(id,contents,true);
+	}
+	
+	/**
+	 * Change an inventory slot.
+	 * @param id The slot to update
+	 * @param contents The contents of the slot to change
+	 * @param update Whether or not to send notice to the server
+	 */
+	public void setContents(int id, ItemStack contents, boolean update) {
 		if(id < 36) inventory.setItem(id, contents);
 		else slots.get(id - 36).setContents(contents);
+		if(!update) return;
     	cic.setData(id, contents);
 		Spoutcraft.send(cic);
 	}
 	
 	public void clearContents(int id) {
+		clearContents(id,true);
+	}
+	
+	/**
+	 * Clears an inventory slot
+	 * @param id The slot to update
+	 * @param update Whether or not to send notice to the server
+	 */
+	public void clearContents(int id, boolean update) {
 		if(id < 36) inventory.clear(id);
 		else slots.get(id - 36).setContents(new ItemStack(MaterialData.air,1));
+		if(!update) return;
 		cic.setData(id, new ItemStack(MaterialData.air));
 		Spoutcraft.send(cic);
 	}

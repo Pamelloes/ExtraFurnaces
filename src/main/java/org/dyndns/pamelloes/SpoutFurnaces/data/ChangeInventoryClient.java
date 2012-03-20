@@ -32,8 +32,9 @@ public class ChangeInventoryClient extends AddonPacket {
 
 	@Override
 	public void run() {
-		if(type.equals(MaterialData.air)) FurnaceGui.current.clearContents(slot);
-		else FurnaceGui.current.setContents(slot, new CraftItemStack(new net.minecraft.src.ItemStack(type.getRawId(), amount, damage)));
+		if(FurnaceGui.current == null) return;
+		if(type.equals(MaterialData.air)) FurnaceGui.current.clearContents(slot, false);
+		else FurnaceGui.current.setContents(slot, new CraftItemStack(new net.minecraft.src.ItemStack(type.getRawId(), amount, damage)), false);
 	}
 
 	@Override

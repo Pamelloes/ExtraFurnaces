@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -43,18 +44,23 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
 		packet.send(player);
 		CustomFurnaceData dat = (CustomFurnaceData) SpoutManager.getChunkDataManager().getBlockData("SpoutFurnaces", world, x, y, z);
 		dat.onPlayerOpenFurnace(player);
-		plugin.map.put(player, dat);
+		SpoutFurnaces.map.put(player, dat);
 		return true;
     }
 
 	@Override
     public void onBlockDestroyed(World world, int x, int y, int z) {
 		CustomFurnaceData dat = (CustomFurnaceData) SpoutManager.getChunkDataManager().getBlockData("SpoutFurnaces", world, x, y, z);
-		if(dat==null) return;
+		if(dat==null)  return;
+		OpenGUIServer close = new OpenGUIServer();
+		close.setType(GUIType.CloseGui.ordinal());
+		for(SpoutPlayer p : SpoutFurnaces.map.keySet()) if(SpoutFurnaces.map.get(p).equals(dat)) close.send(p);
+		SpoutManager.getChunkDataManager().removeBlockData("SpoutFurnaces", world, x, y, z);
+		Location loc = new Location(world,x,y,z);
+		for(int i = 0; i < dat.getSizeInventory(); i++) if(dat.getStackInSlot(i)!=null) world.dropItem(loc, dat.getStackInSlot(i));
         for (Map.Entry<Class<? extends Event>, Set<RegisteredListener>> entry : plugin.getPluginLoader().createRegisteredListeners(dat, plugin).entrySet()) {
            for(RegisteredListener r : entry.getValue()) getEventListeners(getRegistrationClass(entry.getKey())).unregister(r);
         }
-		SpoutManager.getChunkDataManager().removeBlockData("SpoutFurnaces", world, x, y, z);
 	}
 
     private Class<? extends Event> getRegistrationClass(Class<? extends Event> clazz) {

@@ -3,6 +3,7 @@ package org.dyndns.pamelloes.SpoutFurnaces.data;
 import org.dyndns.pamelloes.SpoutFurnaces.client.SpoutFurnacesClient;
 import org.dyndns.pamelloes.SpoutFurnaces.data.OpenGUI.GUIType;
 import org.dyndns.pamelloes.SpoutFurnaces.gui.InventoryWidget;
+import org.spoutcraft.client.SpoutClient;
 import org.spoutcraft.spoutcraftapi.Spoutcraft;
 import org.spoutcraft.spoutcraftapi.addon.Addon;
 import org.spoutcraft.spoutcraftapi.io.AddonPacket;
@@ -31,7 +32,8 @@ public class OpenGUIClient extends AddonPacket {
 		Addon addon = Spoutcraft.getAddonManager().getAddon("SpoutFurnaces");
 		if(addon==null) throw new RuntimeException("SpoutFurnaces is somehow not loaded... how is this code running?");
 		if(!(addon instanceof SpoutFurnacesClient)) throw new RuntimeException("SpoutFurnaces is an imposter! Or this code is outdated. Possibly both. ;)");
-		Spoutcraft.getActivePlayer().getMainScreen().attachPopupScreen(new InventoryWidget(type));
+		if(type == GUIType.CloseGui) SpoutClient.getHandle().displayPreviousScreen();
+		else Spoutcraft.getActivePlayer().getMainScreen().attachPopupScreen(new InventoryWidget(type));
 	}
 
 	@Override

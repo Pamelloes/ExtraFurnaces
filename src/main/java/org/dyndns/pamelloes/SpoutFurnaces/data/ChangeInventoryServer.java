@@ -1,6 +1,5 @@
 package org.dyndns.pamelloes.SpoutFurnaces.data;
 
-import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.dyndns.pamelloes.SpoutFurnaces.SpoutFurnaces;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
@@ -44,14 +43,14 @@ public class ChangeInventoryServer extends AddonPacket {
 	public void run(SpoutPlayer arg0) {
 		if(type.equals(MaterialData.air)) {
 			if(slot < 36) arg0.getInventory().clear(slot);
-			else ((SpoutFurnaces) Bukkit.getPluginManager().getPlugin("SpoutFurnaces")).map.get(arg0).setInventorySlotContents(slot - 36, null);
+			else SpoutFurnaces.map.get(arg0).setInventorySlotContents(slot - 36, null);
 			return;
 		}
 		ItemStack is = new SpoutItemStack(type, amount);
 		is.setDurability(damage);
 		if(slot < 0) arg0.getWorld().dropItem(arg0.getLocation(), is);
 		else if(slot < 36) arg0.getInventory().setItem(slot, is);
-		else ((SpoutFurnaces) Bukkit.getPluginManager().getPlugin("SpoutFurnaces")).map.get(arg0).setInventorySlotContents(slot-36, is);
+		else SpoutFurnaces.map.get(arg0).setInventorySlotContents(slot-36, is);
 	}
 
 }

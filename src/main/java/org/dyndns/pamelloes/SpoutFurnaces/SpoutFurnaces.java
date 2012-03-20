@@ -3,8 +3,10 @@ package org.dyndns.pamelloes.SpoutFurnaces;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -28,7 +30,8 @@ import org.getspout.spoutapi.material.MaterialData;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class SpoutFurnaces extends JavaPlugin {
-	public Map<SpoutPlayer,CustomFurnaceData> map = new HashMap<SpoutPlayer, CustomFurnaceData>();
+	public static Map<SpoutPlayer,CustomFurnaceData> map = new HashMap<SpoutPlayer, CustomFurnaceData>();
+	public static List<SpoutPlayer> idplayers = new ArrayList<SpoutPlayer>();
 	
 	int[] furnaceoff = {0,2,1,1,1,0};
 	int[] furnaceon  = {0,3,4,4,4,0};
