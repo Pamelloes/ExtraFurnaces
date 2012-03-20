@@ -1,5 +1,5 @@
-name: SpoutFurnaces
-main: org.dyndns.pamelloes.SpoutFurnaces.SpoutFurnaces
-version: 0.9.1
+name: ExtraFurnaces
+main: org.dyndns.pamelloes.ExtraFurnaces.SpoutFurnaces
+version: 0.9.6
 description: More Furnaces brought to Spout
 depend: [Spout]

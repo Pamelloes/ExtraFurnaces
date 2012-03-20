@@ -1,7 +1,7 @@
-name: SpoutFurnaces
-version: 0.9.1
-description: This addon provides more powerful furnaceas.
+name: ExtraFurnaces
+version: 0.9.6
+description: This addon provides more powerful furnaces.
 authors: [Pamelloes]
 website: http://forums.getspout.org/threads/wip-spoutfurnaces.287/
-main: org.dyndns.pamelloes.SpoutFurnaces.client.SpoutFurnacesClient
+main: org.dyndns.pamelloes.ExtraFurnaces.client.SpoutFurnacesClient
 mode: BOTH
