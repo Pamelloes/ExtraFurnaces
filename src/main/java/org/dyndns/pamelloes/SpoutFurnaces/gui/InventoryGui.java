@@ -11,13 +11,13 @@ import net.minecraft.src.RenderManager;
 import net.minecraft.src.Tessellator;
 
 import org.dyndns.pamelloes.SpoutFurnaces.data.ChangeInventoryClient;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.spoutcraft.client.SpoutClient;
 import org.spoutcraft.client.config.ConfigReader;
 import org.spoutcraft.client.gui.RenderItemCustom;
 import org.spoutcraft.spoutcraftapi.Spoutcraft;
-import org.spoutcraft.spoutcraftapi.event.screen.ButtonClickEvent;
-import org.spoutcraft.spoutcraftapi.gui.GenericButton;
+import org.spoutcraft.spoutcraftapi.gui.Keyboard;
 import org.spoutcraft.spoutcraftapi.gui.MinecraftTessellator;
 import org.spoutcraft.spoutcraftapi.gui.PopupScreen;
 import org.spoutcraft.spoutcraftapi.inventory.ItemStack;
@@ -45,6 +45,7 @@ public abstract class InventoryGui {
 
 	private long lastmousemove = 0;
 	private double lastX, lastY;
+	private boolean ldownp, rdownp;
 	
 	protected float zLevel = 0.0f;
 	
@@ -56,29 +57,16 @@ public abstract class InventoryGui {
 		this.height = height;
 		inventory = Spoutcraft.getActivePlayer().getInventory();
 		render.setRenderManager(RenderManager.instance);
-		parent.attachWidget(parent.getAddon(), new GenericButton() {
-			@Override
-			public double getWidth() {
-				return parent.getWidth();
-			}
-			@Override
-			public double getHeight() {
-				return parent.getHeight();
-			}
-			
-			@Override
-			public void render() {}
-			
-			@Override
-			public void onButtonClick(ButtonClickEvent e) {
-				toggleDrag(parent.getMouseX(),parent.getMouseY());
-			}
-		});
 	}
 	
 	public synchronized void drawScreen(int mouseX, int mouseY) {
 		xpos = (Spoutcraft.getRenderDelegate().getScreenWidth() - width) / 2;
 		ypos = (Spoutcraft.getRenderDelegate().getScreenHeight() - height) / 2;
+		
+		if(!ldownp && Mouse.isButtonDown(0)) toggleDrag(mouseX, mouseY, false);
+		if(!rdownp && Mouse.isButtonDown(1)) toggleDrag(mouseX, mouseY, true);
+		ldownp = Mouse.isButtonDown(0);
+		rdownp = Mouse.isButtonDown(1);
 		
 		if(mouseX != lastX || mouseY != lastY) {
 			lastmousemove = System.currentTimeMillis();
@@ -305,57 +293,6 @@ public abstract class InventoryGui {
 	public int getHeight() {
 		return height;
 	}
-	
-    private void toggleDrag(double mouseX, double mouseY) {
-    	if(dragsc != null && (mouseX < xpos || mouseX > xpos + width || mouseY < ypos || mouseY > ypos + height)) {
-    		ejectContents(dragsc);
-    		dragsc = null;
-    		dragging = false;
-    		return;
-    	}
-    	int slot = getSlotMouseIsOver(mouseX,mouseY);
-    	if(slot == -1) return;
-	    if(dragging) {
-	    	if(isReadOnly(slot)) return;
-	    	ItemStack temp = getContents(slot);
-	    	if(temp.getTypeId() == 0) {
-	    		setContents(slot, dragsc);
-				dragsc = null;
-				dragging = false;
-	    	} else if (temp.getType().equals(dragsc.getType())) {
-	    		int total = temp.getAmount() + dragsc.getAmount();
-	    		if (total < dragsc.getMaxStackSize()) dragsc.setAmount(total);
-	    		else dragsc.setAmount(dragsc.getMaxStackSize());
-	    		setContents(slot, dragsc);
-				total -= dragsc.getMaxStackSize();
-				if(total < 0) {
-					dragsc = null;
-					dragging = false;
-	    		} else {
-	    			dragsc.setAmount(total);
-	    			dragmc.stackSize = total;
-	    		}
-	    	} else {
-	    		ItemStack next = getContents(slot);
-	    		setContents(slot, dragsc);
-				dragsc = next;
-				adaptStack(dragmc, dragsc);
-	    	}
-	    } else {
-			dragsc = getContents(slot);
-			if(dragsc.getTypeId() > 0) {
-				adaptStack(dragmc, dragsc);
-				clearContents(slot);
-				dragging = true;
-			} else {
-				dragsc = null;
-			}
-	    }
-    }
-    public void onClose() {
-    	if(dragsc == null) return;
-    	ejectContents(dragsc);
-    }
 
 	public void drawTexturedModalRect(int x, int y, int u, int v, int width, int height) {
 		float f = 0.00390625F;
@@ -431,4 +368,153 @@ public abstract class InventoryGui {
 			}
 			GL11.glPopMatrix();
 	}
+	
+    private void toggleDrag(double mouseX, double mouseY, boolean right) {
+    	//drop items
+    	if(dragsc != null && (mouseX < xpos || mouseX > xpos + width || mouseY < ypos || mouseY > ypos + height)) {
+    		ejectContents(dragsc);
+    		dragsc = null;
+    		dragging = false;
+    		return;
+    	}
+    	int slot = getSlotMouseIsOver(mouseX,mouseY);
+    	if(slot == -1) return;
+    	//shift click
+    	if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+	    	ItemStack move = getContents(slot);
+	    	if(move.getTypeId()==0) return;
+	    	int min,max;
+	    	if(slot < 9 && slot >= 0) {
+	    		min = 9;
+	    		max = 36;
+	    	} else if(slot < 36 && slot >=0) {
+	    		min = 0;
+	    		max = 9;
+	    	} else {
+	    		min = 9;
+	    		max = 36;
+	    	}
+    		for(int i = min; i < max; i++) {
+				ItemStack is = getContents(i);
+				if(is.getTypeId() == 0) {
+					if(move.getAmount() <= move.getMaxStackSize()) {
+						setContents(i,move);
+						clearContents(slot);
+						return;
+					} else {
+						is = move.clone();
+						is.setAmount(move.getMaxStackSize());
+						setContents(i, is);
+						move.setAmount(move.getAmount() - move.getMaxStackSize());
+						if(move.getAmount()==0) return;
+					}
+				} else if(is.getType().equals(move.getType())) {
+    				int total = is.getAmount() + move.getAmount();
+    				if(total <= move.getMaxStackSize()) {
+    					is.setAmount(total);
+    					setContents(i,is);
+    					clearContents(slot);
+    					return;
+    				} else {
+    					is.setAmount(move.getMaxStackSize());
+    					setContents(i,is);
+						move.setAmount(total - move.getMaxStackSize());
+						if(move.getAmount()==0) return;
+    				}
+    			}
+    		}
+    		setContents(slot,move);
+    	//insert items
+    	} else if(dragging) {
+	    	ItemStack temp = getContents(slot);
+	    	//air in slot
+	    	if(temp.getTypeId() == 0) {
+		    	if(isReadOnly(slot)) return;
+		    	if(right) {
+		    		temp = dragsc.clone();
+		    		temp.setAmount(1);
+		    		setContents(slot, temp);
+		    		dragsc.setAmount(dragsc.getAmount()-1);
+	    			dragmc.stackSize = dragsc.getAmount();
+	    			if(dragsc.getAmount()==0) {
+			    		dragsc = null;
+			    		dragging = false;
+	    			}
+		    	} else {
+		    		setContents(slot, dragsc);
+		    		dragsc = null;
+		    		dragging = false;
+		    	}
+			//same type in slot
+	    	} else if (temp.getType().equals(dragsc.getType())) {
+	    		if(isReadOnly(slot)) {
+		    		int total = temp.getAmount() + dragsc.getAmount();
+		    		if (total < dragsc.getMaxStackSize()) {
+		    			dragsc.setAmount(total);
+		    			dragmc.stackSize = dragsc.getAmount();
+		    		}
+	    		} else if(right) {
+		    		int total = temp.getAmount() + 1;
+		    		if (total <= dragsc.getMaxStackSize()) {
+		    			temp.setAmount(total);
+		    			setContents(slot, temp);
+		    			dragsc.setAmount(dragsc.getAmount()-1);
+		    			dragmc.stackSize = dragsc.getAmount();
+		    			if(dragsc.getAmount()==0) {
+				    		dragsc = null;
+				    		dragging = false;
+		    			}
+		    		}
+	    		} else {
+		    		int total = temp.getAmount() + dragsc.getAmount();
+		    		if (total <= dragsc.getMaxStackSize()) {
+		    			temp.setAmount(total);
+		    			setContents(slot, temp);
+						dragsc = null;
+						dragging = false;
+		    		} else {
+		    			temp.setAmount(dragsc.getMaxStackSize());
+		    			setContents(slot, temp);
+		    			dragsc.setAmount(total - dragsc.getMaxStackSize());
+		    			dragmc.stackSize = dragsc.getAmount();
+		    		}
+	    		}
+			//different type in slot
+	    	} else {
+	    		if(isReadOnly(slot)) return;
+	    		setContents(slot, dragsc);
+				dragsc = temp;
+				adaptStack(dragmc, dragsc);
+	    	}
+	    //pick up items
+	    } else {
+	    	if(right) {
+	    		dragsc = getContents(slot);
+	    		if(dragsc.getTypeId() > 0) {
+		    		ItemStack temp = dragsc.clone();
+		    		temp.setAmount(temp.getAmount()/2);
+		    		dragsc.setAmount(dragsc.getAmount()-temp.getAmount());
+		    		setContents(slot, temp);
+	    			adaptStack(dragmc, dragsc);
+	    			dragging = true;
+	    		} else {
+	    			dragsc = null;
+	    		}
+	    	} else {
+	    		dragsc = getContents(slot);
+	    		if(dragsc.getTypeId() > 0) {
+	    			adaptStack(dragmc, dragsc);
+	    			clearContents(slot);
+	    			dragging = true;
+	    		} else {
+	    			dragsc = null;
+	    		}
+	    	}
+	    }
+    }
+    
+    public void onClose() {
+    	if(dragsc == null) return;
+    	ejectContents(dragsc);
+    }
 }
