@@ -1,6 +1,7 @@
 package org.dyndns.pamelloes.SpoutFurnaces.data;
 
 import org.dyndns.pamelloes.SpoutFurnaces.gui.FurnaceGui;
+import org.spoutcraft.client.inventory.CraftItemStack;
 import org.spoutcraft.spoutcraftapi.inventory.ItemStack;
 import org.spoutcraft.spoutcraftapi.io.AddonPacket;
 import org.spoutcraft.spoutcraftapi.io.SpoutInputStream;
@@ -32,7 +33,7 @@ public class ChangeInventoryClient extends AddonPacket {
 	@Override
 	public void run() {
 		if(type.equals(MaterialData.air)) FurnaceGui.current.clearContents(slot);
-		else FurnaceGui.current.setContents(slot, new ItemStack(type, amount, damage));
+		else FurnaceGui.current.setContents(slot, new CraftItemStack(new net.minecraft.src.ItemStack(type.getRawId(), amount, damage)));
 	}
 
 	@Override
