@@ -1,4 +1,4 @@
-package org.dyndns.pamelloes.ExtraFurnaces.data;
+package org.dyndns.pamelloes.ExtraFurnaces.packet;
 
 public class OpenGUI {
 	public static enum GUIType {

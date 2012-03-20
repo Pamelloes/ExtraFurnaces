@@ -1,35 +1,35 @@
-package org.dyndns.pamelloes.ExtraFurnaces.block;
+package org.dyndns.pamelloes.ExtraFurnaces.data;
 
 import java.util.UUID;
 
 import org.bukkit.event.EventHandler;
 import org.getspout.spoutapi.event.spout.ServerTickEvent;
 
-public class IronFurnaceData extends CustomFurnaceData {
+public class GoldFurnaceData extends CustomFurnaceData {
 	private static final long serialVersionUID = -3726681582102483401L;
 
-	public IronFurnaceData(UUID world, int x, int y, int z) {
-		super(6, world, x, y, z);
+	public GoldFurnaceData(UUID world, int x, int y, int z) {
+		super(13, world, x, y, z);
 	}
 
 	@Override
 	protected int getFuelIndex() {
-		return 3;
+		return 7;
 	}
 
 	@Override
 	protected int getBurnIndex() {
-		return 1;
+		return 3;
 	}
 
 	@Override
 	protected int getResultIndex() {
-		return 4;
+		return 8;
 	}
 	
 	@Override
 	protected int getItemSmeltTime() {
-		return 150;
+		return 80;
 	}
 
 	@Override
@@ -37,9 +37,9 @@ public class IronFurnaceData extends CustomFurnaceData {
 	public void onServerTick(ServerTickEvent e) {
 		boolean update = update();
 		if(update) {
-			if(furnaceItemStacks[getBurnIndex()] == null && furnaceItemStacks[getResultIndex()] != null) updateRange(getResultIndex() + 1, getResultIndex(), false);
-			updateRange(getFuelIndex(), getFuelIndex() - 1);
-			updateRange(getBurnIndex(), getBurnIndex() - 1);
+			if(furnaceItemStacks[getBurnIndex()] == null && furnaceItemStacks[getResultIndex()] != null) updateRange(getResultIndex() + 4, getResultIndex(), false);
+			updateRange(getFuelIndex(), getFuelIndex() - 3);
+			updateRange(getBurnIndex(), getBurnIndex() - 3);
 			sendInventory();
 		}
 		sendData();

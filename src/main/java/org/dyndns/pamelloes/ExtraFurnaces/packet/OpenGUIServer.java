@@ -1,7 +1,7 @@
-package org.dyndns.pamelloes.ExtraFurnaces.data;
+package org.dyndns.pamelloes.ExtraFurnaces.packet;
 
 import org.dyndns.pamelloes.ExtraFurnaces.SpoutFurnaces;
-import org.dyndns.pamelloes.ExtraFurnaces.data.OpenGUI.GUIType;
+import org.dyndns.pamelloes.ExtraFurnaces.packet.OpenGUI.GUIType;
 import org.getspout.spoutapi.io.AddonPacket;
 import org.getspout.spoutapi.io.SpoutInputStream;
 import org.getspout.spoutapi.io.SpoutOutputStream;

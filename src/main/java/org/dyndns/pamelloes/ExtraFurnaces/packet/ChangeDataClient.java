@@ -1,4 +1,4 @@
-package org.dyndns.pamelloes.ExtraFurnaces.data;
+package org.dyndns.pamelloes.ExtraFurnaces.packet;
 
 import org.dyndns.pamelloes.ExtraFurnaces.gui.FurnaceGui;
 import org.spoutcraft.spoutcraftapi.io.AddonPacket;

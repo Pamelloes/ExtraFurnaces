@@ -1,4 +1,4 @@
-package org.dyndns.pamelloes.ExtraFurnaces.data;
+package org.dyndns.pamelloes.ExtraFurnaces.packet;
 
 import org.getspout.spoutapi.io.AddonPacket;
 import org.getspout.spoutapi.io.SpoutInputStream;

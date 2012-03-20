@@ -13,13 +13,13 @@ import java.util.jar.JarFile;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.dyndns.pamelloes.ExtraFurnaces.block.CustomFurnaceData;
 import org.dyndns.pamelloes.ExtraFurnaces.block.DiamondFurnace;
 import org.dyndns.pamelloes.ExtraFurnaces.block.GoldFurnace;
 import org.dyndns.pamelloes.ExtraFurnaces.block.IronFurnace;
-import org.dyndns.pamelloes.ExtraFurnaces.data.ChangeDataServer;
-import org.dyndns.pamelloes.ExtraFurnaces.data.ChangeInventoryServer;
-import org.dyndns.pamelloes.ExtraFurnaces.data.OpenGUIServer;
+import org.dyndns.pamelloes.ExtraFurnaces.data.CustomFurnaceData;
+import org.dyndns.pamelloes.ExtraFurnaces.packet.ChangeDataServer;
+import org.dyndns.pamelloes.ExtraFurnaces.packet.ChangeInventoryServer;
+import org.dyndns.pamelloes.ExtraFurnaces.packet.OpenGUIServer;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.design.Texture;
 import org.getspout.spoutapi.inventory.SpoutItemStack;

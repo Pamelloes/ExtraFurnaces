@@ -1,4 +1,4 @@
-package org.dyndns.pamelloes.ExtraFurnaces.block;
+package org.dyndns.pamelloes.ExtraFurnaces.data;
 
 import java.util.UUID;
 

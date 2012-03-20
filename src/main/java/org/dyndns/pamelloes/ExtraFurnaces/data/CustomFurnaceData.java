@@ -1,4 +1,4 @@
-package org.dyndns.pamelloes.ExtraFurnaces.block;
+package org.dyndns.pamelloes.ExtraFurnaces.data;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -16,8 +16,8 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import org.dyndns.pamelloes.ExtraFurnaces.data.ChangeDataServer;
-import org.dyndns.pamelloes.ExtraFurnaces.data.ChangeInventoryServer;
+import org.dyndns.pamelloes.ExtraFurnaces.packet.ChangeDataServer;
+import org.dyndns.pamelloes.ExtraFurnaces.packet.ChangeInventoryServer;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.event.spout.ServerTickEvent;
 import org.getspout.spoutapi.player.SpoutPlayer;

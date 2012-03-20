@@ -1,8 +1,8 @@
-package org.dyndns.pamelloes.ExtraFurnaces.data;
+package org.dyndns.pamelloes.ExtraFurnaces.packet;
 
 import org.dyndns.pamelloes.ExtraFurnaces.client.SpoutFurnacesClient;
-import org.dyndns.pamelloes.ExtraFurnaces.data.OpenGUI.GUIType;
 import org.dyndns.pamelloes.ExtraFurnaces.gui.InventoryWidget;
+import org.dyndns.pamelloes.ExtraFurnaces.packet.OpenGUI.GUIType;
 import org.spoutcraft.client.SpoutClient;
 import org.spoutcraft.spoutcraftapi.Spoutcraft;
 import org.spoutcraft.spoutcraftapi.addon.Addon;

@@ -1,7 +1,7 @@
 package org.dyndns.pamelloes.ExtraFurnaces.gui;
 
-import org.dyndns.pamelloes.ExtraFurnaces.data.OpenGUIClient;
-import org.dyndns.pamelloes.ExtraFurnaces.data.OpenGUI.GUIType;
+import org.dyndns.pamelloes.ExtraFurnaces.packet.OpenGUIClient;
+import org.dyndns.pamelloes.ExtraFurnaces.packet.OpenGUI.GUIType;
 import org.spoutcraft.spoutcraftapi.Spoutcraft;
 import org.spoutcraft.spoutcraftapi.event.Listener;
 import org.spoutcraft.spoutcraftapi.event.Order;

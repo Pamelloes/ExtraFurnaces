@@ -10,7 +10,7 @@ import net.minecraft.src.RenderHelper;
 import net.minecraft.src.RenderManager;
 import net.minecraft.src.Tessellator;
 
-import org.dyndns.pamelloes.ExtraFurnaces.data.ChangeInventoryClient;
+import org.dyndns.pamelloes.ExtraFurnaces.packet.ChangeInventoryClient;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.spoutcraft.client.SpoutClient;

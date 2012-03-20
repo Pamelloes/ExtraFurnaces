@@ -1,4 +1,4 @@
-package org.dyndns.pamelloes.ExtraFurnaces.data;
+package org.dyndns.pamelloes.ExtraFurnaces.packet;
 
 import org.bukkit.inventory.ItemStack;
 import org.dyndns.pamelloes.ExtraFurnaces.SpoutFurnaces;
