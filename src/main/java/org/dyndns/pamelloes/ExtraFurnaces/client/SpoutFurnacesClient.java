@@ -23,9 +23,9 @@ public class SpoutFurnacesClient extends JavaAddon {
 			ClassLoader cl = createClassLoader();
 			Class<? extends AddonPacket> clazz = (Class<? extends AddonPacket>) cl.loadClass("org.dyndns.pamelloes.SpoutFurnaces.data.OpenGUIClient");
 			AddonPacket.register(clazz, "OGUI");
-			clazz = (Class<? extends AddonPacket>) cl.loadClass("org.dyndns.pamelloes.SpoutFurnaces.data.ChangeInventoryClient");
+			clazz = (Class<? extends AddonPacket>) cl.loadClass("org.dyndns.pamelloes.ExtraFurnaces.data.ChangeInventoryClient");
 			AddonPacket.register(clazz, "CInv");
-			clazz = (Class<? extends AddonPacket>) cl.loadClass("org.dyndns.pamelloes.SpoutFurnaces.data.ChangeDataClient");
+			clazz = (Class<? extends AddonPacket>) cl.loadClass("org.dyndns.pamelloes.ExtraFurnaces.data.ChangeDataClient");
 			AddonPacket.register(clazz, "CData");
 		} catch (Exception e) {
 			e.printStackTrace();

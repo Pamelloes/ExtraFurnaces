@@ -51,7 +51,7 @@ public abstract class CustomFurnaceData implements Serializable, Listener {
         this.x = x;
         this.y = y;
         this.z = z;
-        Bukkit.getPluginManager().getPlugin("SpoutFurnaces").getServer().getPluginManager().registerEvents(this, Bukkit.getPluginManager().getPlugin("SpoutFurnaces"));
+        Bukkit.getPluginManager().getPlugin("ExtraFurnaces").getServer().getPluginManager().registerEvents(this, Bukkit.getPluginManager().getPlugin("ExtraFurnaces"));
     }
 
     /**
@@ -255,7 +255,7 @@ public abstract class CustomFurnaceData implements Serializable, Listener {
         Bukkit.getPluginManager().getPlugin("Spout").getServer().getPluginManager().registerEvents(this, Bukkit.getPluginManager().getPlugin("Spout"));
         Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("Spout"), new Runnable() {
         	public void run() {
-        		SpoutManager.getChunkDataManager().setBlockData("SpoutFurnaces", Bukkit.getWorld(world), x, y, z, CustomFurnaceData.this);
+        		SpoutManager.getChunkDataManager().setBlockData("ExtraFurnaces", Bukkit.getWorld(world), x, y, z, CustomFurnaceData.this);
         	}
         }, 1L);
     }
