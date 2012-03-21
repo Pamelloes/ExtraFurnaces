@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.src.Item;
 import net.minecraft.src.OpenGlHelper;
 import net.minecraft.src.RenderHelper;
 import net.minecraft.src.RenderManager;
@@ -125,7 +126,7 @@ public abstract class InventoryGui {
 			List<String> list = inventorySquare.getItemNameandInformation();
 			org.spoutcraft.spoutcraftapi.material.Material item = MaterialData.getMaterial(inventorySquare.itemID, (short)(inventorySquare.getItemDamage()));
 			String custom = item != null ? String.format(item.getName(), String.valueOf(inventorySquare.getItemDamage())) : null;
-			if (custom != null && inventorySquare.itemID != MaterialData.potion.getRawId()) {
+			if (custom != null && inventorySquare.itemID != Item.potion.shiftedIndex) {
 				list.set(0, custom);
 			}
 			if(list.size() > 0) {

@@ -4,7 +4,9 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -28,7 +30,7 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
 	private GenericCubeBlockDesign desoff, deson;
 	
 	public CustomFurnace(SpoutFurnaces plugin, String name, Texture tex, int[] idson,int[] idsoff) {
-		super(plugin, name, true, new GenericCubeBlockDesign(plugin, tex, idsoff));
+		super(plugin, name, Material.FURNACE.getId(), new GenericCubeBlockDesign(plugin, tex, idsoff));
 		desoff=(GenericCubeBlockDesign) getBlockDesign();
 		deson=new GenericCubeBlockDesign(plugin, tex, idson);
 		this.idson=idson;
@@ -41,6 +43,11 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
 
 	@Override
     public boolean onBlockInteract(World world, int x, int y, int z, SpoutPlayer player) {
+		if(!player.isSpoutCraftEnabled()) {
+			player.sendMessage(ChatColor.RED + "This is a special furnace and requires Spoutcraft for you to use it.");
+			player.sendMessage(ChatColor.RED + "You can get Spoutcraft at http://get.spout.org/");
+			return true;
+		}
 		AddonPacket packet = new OpenGUIServer(getGUIType());
 		packet.send(player);
 		CustomFurnaceData dat = (CustomFurnaceData) SpoutManager.getChunkDataManager().getBlockData("SpoutFurnaces", world, x, y, z);
