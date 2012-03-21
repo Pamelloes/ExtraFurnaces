@@ -29,7 +29,7 @@ import org.getspout.spoutapi.material.CustomBlock;
 import org.getspout.spoutapi.material.MaterialData;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
-public class SpoutFurnaces extends JavaPlugin {
+public class ExtraFurnaces extends JavaPlugin {
 	public static Map<SpoutPlayer,CustomFurnaceData> map = new HashMap<SpoutPlayer, CustomFurnaceData>();
 	public static List<SpoutPlayer> idplayers = new ArrayList<SpoutPlayer>();
 	
@@ -48,15 +48,15 @@ public class SpoutFurnaces extends JavaPlugin {
 		AddonPacket.register(OpenGUIServer.class, "OGUI");
 		AddonPacket.register(ChangeInventoryServer.class, "CInv");
 		AddonPacket.register(ChangeDataServer.class, "CData");
-		System.out.println("[SpoutFurnaces] enabled.");
+		System.out.println("[ExtraFurnaces] enabled.");
 	}
 
 	public void onDisable() {
-		System.out.println("[SpoutFurnaces] disabled.");
+		System.out.println("[ExtraFurnaces] disabled.");
 	}
 	
 	private void registerItems() {
-		Texture texture = new Texture(this,"plugins/SpoutFurnaces/moreFurnaces.png",256,256,16);
+		Texture texture = new Texture(this,"plugins/ExtraFurnaces/moreFurnaces.png",256,256,16);
 		ironfurnace = new IronFurnace(this, texture, incrementArray(furnaceon,ironfurnaceincr), incrementArray(furnaceoff,ironfurnaceincr));
 		goldfurnace = new GoldFurnace(this,texture, incrementArray(furnaceon,goldfurnaceincr), incrementArray(furnaceoff,goldfurnaceincr));
 		diamondfurnace = new DiamondFurnace(this, texture, incrementArray(furnaceon,diamondfurnaceincr), incrementArray(furnaceoff,diamondfurnaceincr));

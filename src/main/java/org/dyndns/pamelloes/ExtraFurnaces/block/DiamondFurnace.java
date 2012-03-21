@@ -3,7 +3,7 @@ package org.dyndns.pamelloes.ExtraFurnaces.block;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
-import org.dyndns.pamelloes.ExtraFurnaces.SpoutFurnaces;
+import org.dyndns.pamelloes.ExtraFurnaces.ExtraFurnaces;
 import org.dyndns.pamelloes.ExtraFurnaces.data.DiamondFurnaceData;
 import org.dyndns.pamelloes.ExtraFurnaces.packet.OpenGUI.GUIType;
 import org.getspout.spoutapi.SpoutManager;
@@ -12,7 +12,7 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class DiamondFurnace extends CustomFurnace {
 
-	public DiamondFurnace(SpoutFurnaces plugin, Texture texture, int[] designon, int[] designoff) {
+	public DiamondFurnace(ExtraFurnaces plugin, Texture texture, int[] designon, int[] designoff) {
 		super(plugin, "Diamond Furnace", texture, designon, designoff);
 	}
 	
@@ -21,7 +21,7 @@ public class DiamondFurnace extends CustomFurnace {
 
 	@Override
     public void onBlockPlace(World world, int x, int y, int z) {
-		SpoutManager.getChunkDataManager().setBlockData("SpoutFurnaces", world, x, y, z, new DiamondFurnaceData(world.getUID(),x,y,z));
+		SpoutManager.getChunkDataManager().setBlockData("ExtraFurnaces", world, x, y, z, new DiamondFurnaceData(world.getUID(),x,y,z));
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package org.dyndns.pamelloes.ExtraFurnaces.packet;
 
-import org.dyndns.pamelloes.ExtraFurnaces.SpoutFurnaces;
+import org.dyndns.pamelloes.ExtraFurnaces.ExtraFurnaces;
 import org.dyndns.pamelloes.ExtraFurnaces.packet.OpenGUI.GUIType;
 import org.getspout.spoutapi.io.AddonPacket;
 import org.getspout.spoutapi.io.SpoutInputStream;
@@ -35,8 +35,8 @@ public class OpenGUIServer extends AddonPacket {
 	@Override
 	public void run(SpoutPlayer arg0) {
 		if(!type.equals(GUIType.CloseGui)) return;
-		SpoutFurnaces.map.get(arg0).onPlayerCloseFurnace(arg0);
-		SpoutFurnaces.map.remove(arg0);
+		ExtraFurnaces.map.get(arg0).onPlayerCloseFurnace(arg0);
+		ExtraFurnaces.map.remove(arg0);
 	}
 
 	@Override

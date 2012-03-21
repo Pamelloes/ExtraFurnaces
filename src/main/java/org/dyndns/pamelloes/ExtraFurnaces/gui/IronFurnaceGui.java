@@ -11,7 +11,7 @@ import java.util.zip.ZipEntry;
 
 import javax.imageio.ImageIO;
 
-import org.dyndns.pamelloes.ExtraFurnaces.client.SpoutFurnacesClient;
+import org.dyndns.pamelloes.ExtraFurnaces.client.ExtraFurnacesClient;
 import org.spoutcraft.spoutcraftapi.gui.PopupScreen;
 
 
@@ -46,7 +46,7 @@ public class IronFurnaceGui extends FurnaceGui {
 
 			// Instead of using a hardcoded .jar file name, get whatever
 			// .jar contains this addon's code
-			File jarFile = new File(URLDecoder.decode(SpoutFurnacesClient.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath(), "UTF-8"));
+			File jarFile = new File(URLDecoder.decode(ExtraFurnacesClient.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath(), "UTF-8"));
 			JarFile jar = new JarFile(jarFile);
 			ZipEntry ze = jar.getEntry("ironfurnace.png");
 			InputStream is = jar.getInputStream(ze);

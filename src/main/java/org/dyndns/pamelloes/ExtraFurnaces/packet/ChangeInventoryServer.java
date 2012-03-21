@@ -1,7 +1,7 @@
 package org.dyndns.pamelloes.ExtraFurnaces.packet;
 
 import org.bukkit.inventory.ItemStack;
-import org.dyndns.pamelloes.ExtraFurnaces.SpoutFurnaces;
+import org.dyndns.pamelloes.ExtraFurnaces.ExtraFurnaces;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.io.AddonPacket;
 import org.getspout.spoutapi.io.SpoutInputStream;
@@ -43,14 +43,14 @@ public class ChangeInventoryServer extends AddonPacket {
 	public void run(SpoutPlayer arg0) {
 		if(type.equals(MaterialData.air)) {
 			if(slot < 36) arg0.getInventory().clear(slot);
-			else SpoutFurnaces.map.get(arg0).setInventorySlotContents(slot - 36, null);
+			else ExtraFurnaces.map.get(arg0).setInventorySlotContents(slot - 36, null);
 			return;
 		}
 		ItemStack is = new SpoutItemStack(type, amount);
 		is.setDurability(damage);
 		if(slot < 0) arg0.getWorld().dropItem(arg0.getLocation(), is);
 		else if(slot < 36) arg0.getInventory().setItem(slot, is);
-		else SpoutFurnaces.map.get(arg0).setInventorySlotContents(slot-36, is);
+		else ExtraFurnaces.map.get(arg0).setInventorySlotContents(slot-36, is);
 	}
 
 }

@@ -12,7 +12,7 @@ import org.dyndns.pamelloes.ExtraFurnaces.gui.FurnaceGui;
 import org.spoutcraft.spoutcraftapi.addon.java.JavaAddon;
 import org.spoutcraft.spoutcraftapi.io.AddonPacket;
 
-public class SpoutFurnacesClient extends JavaAddon {
+public class ExtraFurnacesClient extends JavaAddon {
 	public boolean isEnabled = false;
 	public static FurnaceGui current = null;
 
@@ -21,11 +21,11 @@ public class SpoutFurnacesClient extends JavaAddon {
 	public void onEnable() {
 		try {
 			ClassLoader cl = createClassLoader();
-			Class<? extends AddonPacket> clazz = (Class<? extends AddonPacket>) cl.loadClass("org.dyndns.pamelloes.SpoutFurnaces.data.OpenGUIClient");
+			Class<? extends AddonPacket> clazz = (Class<? extends AddonPacket>) cl.loadClass("org.dyndns.pamelloes.ExtraFurnaces.packet.OpenGUIClient");
 			AddonPacket.register(clazz, "OGUI");
-			clazz = (Class<? extends AddonPacket>) cl.loadClass("org.dyndns.pamelloes.ExtraFurnaces.data.ChangeInventoryClient");
+			clazz = (Class<? extends AddonPacket>) cl.loadClass("org.dyndns.pamelloes.ExtraFurnaces.packet.ChangeInventoryClient");
 			AddonPacket.register(clazz, "CInv");
-			clazz = (Class<? extends AddonPacket>) cl.loadClass("org.dyndns.pamelloes.ExtraFurnaces.data.ChangeDataClient");
+			clazz = (Class<? extends AddonPacket>) cl.loadClass("org.dyndns.pamelloes.ExtraFurnaces.packet.ChangeDataClient");
 			AddonPacket.register(clazz, "CData");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -85,17 +85,17 @@ public class SpoutFurnacesClient extends JavaAddon {
 	
 	private ClassLoader createClassLoader() {
 		ClassLoader  /*AddonClassLoader*/ cl1 = getClass().getClassLoader();
-		ClassLoader /*SC Class Loader*/ cl2  = null;
-		try {
+		ClassLoader /*SC Class Loader*/ cl2  = cl1.getClass().getClassLoader();
+		/*try {
 			Field f = cl1.getClass().getDeclaredField("loader");
 			f.setAccessible(true);
-			Object /*JavaAddonLoader*/ loader = f.get(cl1);
+			Object /*JavaAddonLoader* / loader = f.get(cl1);
 			cl2 = loader.getClass().getClassLoader();
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 		
-		return DualClassLoader.getDualClassLoader(cl1,cl2, "org.dyndns.pamelloes.SpoutFurnaces.data", "org.dyndns.pamelloes.SpoutFurnaces.gui", "org.dyndns.pamelloes.SpoutFurnaces.gui.inventory");
+		return DualClassLoader.getDualClassLoader(cl1,cl2, "org.dyndns.pamelloes.ExtraFurnaces.packet", "org.dyndns.pamelloes.ExtraFurnaces.gui");
 	}
 	
 	public static double xscale,yscale;

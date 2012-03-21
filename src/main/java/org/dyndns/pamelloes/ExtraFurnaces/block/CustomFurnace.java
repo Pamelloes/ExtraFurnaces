@@ -12,7 +12,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.plugin.RegisteredListener;
-import org.dyndns.pamelloes.ExtraFurnaces.SpoutFurnaces;
+import org.dyndns.pamelloes.ExtraFurnaces.ExtraFurnaces;
 import org.dyndns.pamelloes.ExtraFurnaces.data.CustomFurnaceData;
 import org.dyndns.pamelloes.ExtraFurnaces.packet.OpenGUIServer;
 import org.dyndns.pamelloes.ExtraFurnaces.packet.OpenGUI.GUIType;
@@ -24,12 +24,12 @@ import org.getspout.spoutapi.material.block.GenericCubeCustomBlock;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public abstract class CustomFurnace extends GenericCubeCustomBlock {
-	protected SpoutFurnaces plugin;
+	protected ExtraFurnaces plugin;
 	private Texture texture;
 	private int[] idson, idsoff;
 	private GenericCubeBlockDesign desoff, deson;
 	
-	public CustomFurnace(SpoutFurnaces plugin, String name, Texture tex, int[] idson,int[] idsoff) {
+	public CustomFurnace(ExtraFurnaces plugin, String name, Texture tex, int[] idson,int[] idsoff) {
 		super(plugin, name, Material.LEAVES.getId(), new GenericCubeBlockDesign(plugin, tex, idsoff));
 		desoff=(GenericCubeBlockDesign) getBlockDesign();
 		deson=new GenericCubeBlockDesign(plugin, tex, idson);
@@ -50,20 +50,20 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
 		}
 		AddonPacket packet = new OpenGUIServer(getGUIType());
 		packet.send(player);
-		CustomFurnaceData dat = (CustomFurnaceData) SpoutManager.getChunkDataManager().getBlockData("SpoutFurnaces", world, x, y, z);
+		CustomFurnaceData dat = (CustomFurnaceData) SpoutManager.getChunkDataManager().getBlockData("ExtraFurnaces", world, x, y, z);
 		dat.onPlayerOpenFurnace(player);
-		SpoutFurnaces.map.put(player, dat);
+		ExtraFurnaces.map.put(player, dat);
 		return true;
     }
 
 	@Override
     public void onBlockDestroyed(World world, int x, int y, int z) {
-		CustomFurnaceData dat = (CustomFurnaceData) SpoutManager.getChunkDataManager().getBlockData("SpoutFurnaces", world, x, y, z);
+		CustomFurnaceData dat = (CustomFurnaceData) SpoutManager.getChunkDataManager().getBlockData("ExtraFurnaces", world, x, y, z);
 		if(dat==null)  return;
 		OpenGUIServer close = new OpenGUIServer();
 		close.setType(GUIType.CloseGui.ordinal());
-		for(SpoutPlayer p : SpoutFurnaces.map.keySet()) if(SpoutFurnaces.map.get(p).equals(dat)) close.send(p);
-		SpoutManager.getChunkDataManager().removeBlockData("SpoutFurnaces", world, x, y, z);
+		for(SpoutPlayer p : ExtraFurnaces.map.keySet()) if(ExtraFurnaces.map.get(p).equals(dat)) close.send(p);
+		SpoutManager.getChunkDataManager().removeBlockData("ExtraFurnaces", world, x, y, z);
 		Location loc = new Location(world,x,y,z);
 		for(int i = 0; i < dat.getSizeInventory(); i++) if(dat.getStackInSlot(i)!=null) world.dropItem(loc, dat.getStackInSlot(i));
         for (Map.Entry<Class<? extends Event>, Set<RegisteredListener>> entry : plugin.getPluginLoader().createRegisteredListeners(dat, plugin).entrySet()) {
