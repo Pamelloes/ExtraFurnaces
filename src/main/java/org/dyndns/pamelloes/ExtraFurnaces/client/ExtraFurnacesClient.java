@@ -3,7 +3,6 @@ package org.dyndns.pamelloes.ExtraFurnaces.client;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -86,14 +85,6 @@ public class ExtraFurnacesClient extends JavaAddon {
 	private ClassLoader createClassLoader() {
 		ClassLoader  /*AddonClassLoader*/ cl1 = getClass().getClassLoader();
 		ClassLoader /*SC Class Loader*/ cl2  = cl1.getClass().getClassLoader();
-		/*try {
-			Field f = cl1.getClass().getDeclaredField("loader");
-			f.setAccessible(true);
-			Object /*JavaAddonLoader* / loader = f.get(cl1);
-			cl2 = loader.getClass().getClassLoader();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
 		
 		return DualClassLoader.getDualClassLoader(cl1,cl2, "org.dyndns.pamelloes.ExtraFurnaces.packet", "org.dyndns.pamelloes.ExtraFurnaces.gui");
 	}

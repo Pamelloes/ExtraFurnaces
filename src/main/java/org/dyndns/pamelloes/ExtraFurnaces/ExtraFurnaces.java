@@ -42,6 +42,11 @@ public class ExtraFurnaces extends JavaPlugin {
 	public static CustomBlock ironfurnace, goldfurnace, diamondfurnace;
 	
 	public void onEnable() {
+		if(Integer.parseInt(getServer().getPluginManager().getPlugin("Spout").getDescription().getVersion())<1003) {
+			System.out.println("[ExtraFurnaces] EXTRA FURNACES REQUIRES SPOUTPLUGIN VERSION 1003 OR NEWER!!!");
+			System.out.println("[ExtraFurnaces] EXTRA FURNACES WILL DISABLE ITSELF!");
+			getServer().getPluginManager().disablePlugin(this);
+		}
 		extractFile("moreFurnaces.png",true);
 		registerItems();
 		registerRecipes();
