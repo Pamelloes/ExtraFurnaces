@@ -82,7 +82,7 @@ public abstract class InventoryGui {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glEnable(32826 /*GL_RESCALE_NORMAL_EXT*/);
 		int hoverslot = -1;
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapEnabled, (float)240 / 1.0F, (float)240 / 1.0F);
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)240 / 1.0F, (float)240 / 1.0F);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		for(int slot = 0; slot < 36 + slots.size(); slot++)
 		{
@@ -135,7 +135,7 @@ public abstract class InventoryGui {
 				for(int l4 = 0; l4 < list.size(); l4++) {
 					String s = (String)list.get(l4);
 					if(l4 == 0) {
-						s = (new StringBuilder()).append("\247").append(Integer.toHexString(inventorySquare.getRarity().field_40535_e)).append(s).toString();
+						s = (new StringBuilder()).append("\247").append(Integer.toHexString(inventorySquare.getRarity().nameColor)).append(s).toString();
 					} else {
 						s = (new StringBuilder()).append("\2477").append(s).toString();
 					}

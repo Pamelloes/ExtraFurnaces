@@ -4,7 +4,7 @@
 
   <groupId>org.dyndns.pamelloes</groupId>
   <artifactId>ExtraFurnaces</artifactId>
-  <version>0.9.6-SNAPSHOT</version>
+  <version>1.0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>ExtraFurnaces</name>
@@ -40,14 +40,8 @@
     </dependency>
     <dependency>
     	<groupId>org.bukkit</groupId>
-    	<artifactId>bukkit</artifactId>
-    	<version>1.2.3-R0.3-SNAPSHOT</version>
-    	<scope>compile</scope>
-    </dependency>
-    <dependency>
-    	<groupId>org.bukkit</groupId>
     	<artifactId>craftbukkit</artifactId>
-    	<version>1.2.3-R0.3-SNAPSHOT</version>
+    	<version>1.2.4-R0.1-SNAPSHOT</version>
     	<scope>compile</scope>
     </dependency>
     <dependency>
@@ -59,11 +53,11 @@
   <repositories>
 	<repository>
 	  <id>bukkit-repo</id>
-	  <url>http://repo.bukkit.org/artifactory/repo</url>
+	  <url>http://repo.bukkit.org/content/groups/public</url>
 	</repository>
 	<repository>
 	  <id>spout-repo</id>
-	  <url>http://repo.getspout.org/</url>
+	  <url>http://repo.spout.org/</url>
 	</repository>
 	<repository>
 	  <id>nexis-public</id>

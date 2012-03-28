@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -176,7 +177,7 @@ public abstract class CustomFurnaceData implements Serializable, Listener {
         if (furnaceItemStacks[getBurnIndex()] == null) {
             return false;
         } else {
-            ItemStack itemstack = new CraftItemStack(FurnaceRecipes.getInstance().getResult(furnaceItemStacks[getBurnIndex()].getTypeId()));
+            ItemStack itemstack = getResult(furnaceItemStacks[getBurnIndex()]);
             return itemstack == null ? false : (furnaceItemStacks[getResultIndex()] == null ? true : (!furnaceItemStacks[getResultIndex()].getType().equals(itemstack.getType()) ? false : (furnaceItemStacks[getResultIndex()].getAmount() + itemstack.getAmount() <= 64 && furnaceItemStacks[getResultIndex()].getAmount() < furnaceItemStacks[getResultIndex()].getMaxStackSize() ? true : furnaceItemStacks[getResultIndex()].getAmount() + itemstack.getAmount() <= itemstack.getMaxStackSize())));
         }
     }
@@ -187,7 +188,7 @@ public abstract class CustomFurnaceData implements Serializable, Listener {
     public void smeltItem() {
         if (!canSmelt()) return;
 
-        ItemStack result = new CraftItemStack(FurnaceRecipes.getInstance().getResult(furnaceItemStacks[getBurnIndex()].getTypeId()));
+        ItemStack result = getResult(furnaceItemStacks[getBurnIndex()]);
 
         if (furnaceItemStacks[getResultIndex()] == null) furnaceItemStacks[getResultIndex()] = result.clone();
         else if (furnaceItemStacks[getResultIndex()].getType().equals(result.getType())) furnaceItemStacks[getResultIndex()].setAmount(furnaceItemStacks[getResultIndex()].getAmount() + 1);
@@ -201,15 +202,38 @@ public abstract class CustomFurnaceData implements Serializable, Listener {
      * Returns the number of ticks that the supplied fuel item will keep the furnace burning, or 0 if the item isn't
      * fuel
      */
-    private int getItemBurnTime(ItemStack item) {
+    protected int getItemBurnTime(ItemStack item) {
         if (item == null) return 0;
-        if (item.getType().equals(Material.WOOD)) return 300;
-        if (item.getType().equals(Material.STICK)) return 100;
-        if (item.getType().equals(Material.COAL)) return 1600;
-        if (item.getType().equals(Material.LAVA_BUCKET)) return 20000;
-        if (item.getType().equals(Material.SAPLING)) return 100;
-        if (item.getType().equals(Material.BLAZE_ROD)) return 2400;
+        int id = item.getTypeId();
+        if (id == Material.WOOD.getId() || id == Material.LOG.getId()) return 300;
+        if (id == Material.STICK.getId()) return 100;
+        if (id == Material.COAL.getId()) return 1600;
+        if (id == Material.LAVA_BUCKET.getId()) return 20000;
+        if (id == Material.SAPLING.getId()) return 100;
+        if (id == Material.BLAZE_ROD.getId()) return 2400;
         return 0;
+    }
+    
+    protected ItemStack getResult(ItemStack in) {
+    	Method m1 = null;
+    	Method m2 = null;
+    	try {
+    		m1 = FurnaceRecipes.class.getDeclaredMethod("getResult",int.class);
+    	} catch(Exception e) { }
+    	try {
+			m2 = FurnaceRecipes.class.getDeclaredMethod("getResult",net.minecraft.server.ItemStack.class);
+		} catch (Exception e) { }
+		if(m1 != null) {
+			try {
+				return new CraftItemStack((net.minecraft.server.ItemStack) m1.invoke(FurnaceRecipes.getInstance(), in.getTypeId()));
+			} catch (Exception e) { }
+		}
+		if(m2 != null) {
+			try {
+				return new CraftItemStack((net.minecraft.server.ItemStack) m2.invoke(FurnaceRecipes.getInstance(), new CraftItemStack(in).getHandle()));
+			} catch (Exception e) { }
+		}
+		return null;
     }
     
     public void onPlayerOpenFurnace(SpoutPlayer player) {

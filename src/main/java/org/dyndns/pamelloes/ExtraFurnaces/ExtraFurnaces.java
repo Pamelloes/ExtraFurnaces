@@ -3,14 +3,14 @@ package org.dyndns.pamelloes.ExtraFurnaces;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.dyndns.pamelloes.ExtraFurnaces.block.DiamondFurnace;
@@ -20,18 +20,20 @@ import org.dyndns.pamelloes.ExtraFurnaces.data.CustomFurnaceData;
 import org.dyndns.pamelloes.ExtraFurnaces.packet.ChangeDataServer;
 import org.dyndns.pamelloes.ExtraFurnaces.packet.ChangeInventoryServer;
 import org.dyndns.pamelloes.ExtraFurnaces.packet.OpenGUIServer;
+import org.dyndns.pamelloes.ExtraFurnaces.packet.OpenGUI.GUIType;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.design.Texture;
+import org.getspout.spoutapi.event.input.KeyPressedEvent;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.inventory.SpoutShapedRecipe;
 import org.getspout.spoutapi.io.AddonPacket;
+import org.getspout.spoutapi.keyboard.Keyboard;
 import org.getspout.spoutapi.material.CustomBlock;
 import org.getspout.spoutapi.material.MaterialData;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class ExtraFurnaces extends JavaPlugin {
 	public static Map<SpoutPlayer,CustomFurnaceData> map = new HashMap<SpoutPlayer, CustomFurnaceData>();
-	public static List<SpoutPlayer> idplayers = new ArrayList<SpoutPlayer>();
 	
 	int[] furnaceoff = {0,2,1,1,1,0};
 	int[] furnaceon  = {0,3,4,4,4,0};
@@ -53,6 +55,18 @@ public class ExtraFurnaces extends JavaPlugin {
 		AddonPacket.register(OpenGUIServer.class, "OGUI");
 		AddonPacket.register(ChangeInventoryServer.class, "CInv");
 		AddonPacket.register(ChangeDataServer.class, "CData");
+		getServer().getPluginManager().registerEvents(new Listener() {
+			@SuppressWarnings("unused")
+			@EventHandler
+			public void onKeyDown(KeyPressedEvent e) {
+				if(!e.getKey().equals(Keyboard.KEY_E)) return;
+				if(!map.keySet().contains(e.getPlayer())) return;
+				map.remove(e.getPlayer());
+				OpenGUIServer close = new OpenGUIServer();
+				close.setType(GUIType.CloseGui.ordinal());
+				close.send(e.getPlayer());
+			}
+		}, this);
 		System.out.println("[ExtraFurnaces] enabled.");
 	}
 

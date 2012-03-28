@@ -1,17 +1,14 @@
 package org.dyndns.pamelloes.ExtraFurnaces.block;
 
-import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.plugin.IllegalPluginAccessException;
-import org.bukkit.plugin.RegisteredListener;
 import org.dyndns.pamelloes.ExtraFurnaces.ExtraFurnaces;
 import org.dyndns.pamelloes.ExtraFurnaces.data.CustomFurnaceData;
 import org.dyndns.pamelloes.ExtraFurnaces.packet.OpenGUIServer;
@@ -218,37 +215,17 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
 		if(dat==null)  return;
 		OpenGUIServer close = new OpenGUIServer();
 		close.setType(GUIType.CloseGui.ordinal());
-		for(SpoutPlayer p : ExtraFurnaces.map.keySet()) if(ExtraFurnaces.map.get(p).equals(dat)) close.send(p);
+		Iterator<Entry<SpoutPlayer,CustomFurnaceData>> iter = ExtraFurnaces.map.entrySet().iterator();
+		while(iter.hasNext()) {
+			Entry<SpoutPlayer,CustomFurnaceData> entry = iter.next();
+			if(entry.getValue().equals(dat)) {
+				close.send(entry.getKey());
+				iter.remove();
+			}
+		}
 		SpoutManager.getChunkDataManager().removeBlockData("ExtraFurnaces", world, x, y, z);
 		Location loc = new Location(world,x,y,z);
 		for(int i = 0; i < dat.getSizeInventory(); i++) if(dat.getStackInSlot(i)!=null) world.dropItem(loc, dat.getStackInSlot(i));
-        for (Map.Entry<Class<? extends Event>, Set<RegisteredListener>> entry : plugin.getPluginLoader().createRegisteredListeners(dat, plugin).entrySet()) {
-           for(RegisteredListener r : entry.getValue()) getEventListeners(getRegistrationClass(entry.getKey())).unregister(r);
-        }
+        HandlerList.unregisterAll(dat);
 	}
-
-    private Class<? extends Event> getRegistrationClass(Class<? extends Event> clazz) {
-        try {
-            clazz.getDeclaredMethod("getHandlerList");
-            return clazz;
-        } catch (NoSuchMethodException e) {
-            if (clazz.getSuperclass() != null
-                    && !clazz.getSuperclass().equals(Event.class)
-                    && Event.class.isAssignableFrom(clazz.getSuperclass())) {
-                return getRegistrationClass(clazz.getSuperclass().asSubclass(Event.class));
-            } else {
-                throw new IllegalPluginAccessException("Unable to find handler list for event " + clazz.getName());
-            }
-        }
-    }
-
-    private HandlerList getEventListeners(Class<? extends Event> type) {
-        try {
-            Method method = getRegistrationClass(type).getDeclaredMethod("getHandlerList");
-            method.setAccessible(true);
-            return (HandlerList) method.invoke(null);
-        } catch (Exception e) {
-            throw new IllegalPluginAccessException(e.toString());
-        }
-    }
 }

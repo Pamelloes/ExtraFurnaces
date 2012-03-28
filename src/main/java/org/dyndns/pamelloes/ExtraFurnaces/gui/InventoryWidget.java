@@ -47,7 +47,7 @@ public class InventoryWidget extends GenericPopup {
 			throw new RuntimeException("The server requested a GUI with an invalid id opened. The server or client is outdated.");
 		}
 		FurnaceGui.current = (FurnaceGui) gui;
-		setBgVisible(false);
+		setBgVisible(true);
 		setAnchor(WidgetAnchor.CENTER_CENTER);
 	}
 
