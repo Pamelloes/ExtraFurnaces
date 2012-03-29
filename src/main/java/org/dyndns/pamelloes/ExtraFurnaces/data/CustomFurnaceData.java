@@ -225,12 +225,14 @@ public abstract class CustomFurnaceData implements Serializable, Listener {
 		} catch (Exception e) { }
 		if(m1 != null) {
 			try {
-				return new CraftItemStack((net.minecraft.server.ItemStack) m1.invoke(FurnaceRecipes.getInstance(), in.getTypeId()));
+				net.minecraft.server.ItemStack is = (net.minecraft.server.ItemStack) m1.invoke(FurnaceRecipes.getInstance(), in.getTypeId());
+				return is == null ? null : new CraftItemStack(is);
 			} catch (Exception e) { }
 		}
 		if(m2 != null) {
 			try {
-				return new CraftItemStack((net.minecraft.server.ItemStack) m2.invoke(FurnaceRecipes.getInstance(), new CraftItemStack(in).getHandle()));
+				net.minecraft.server.ItemStack is = (net.minecraft.server.ItemStack) m2.invoke(FurnaceRecipes.getInstance(), new CraftItemStack(in).getHandle());
+				return is == null ? null : new CraftItemStack(is);
 			} catch (Exception e) { }
 		}
 		return null;
