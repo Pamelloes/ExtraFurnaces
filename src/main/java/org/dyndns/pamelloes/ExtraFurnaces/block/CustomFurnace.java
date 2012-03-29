@@ -36,7 +36,7 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
 	private GenericCubeBlockDesign desoff, deson;
 	
 	public CustomFurnace(ExtraFurnaces plugin, String name, Texture tex, int[] idson,int[] idsoff) {
-		super(plugin, name, Material.LEAVES.getId(), new GenericCubeBlockDesign(plugin, tex, idsoff));
+		super(plugin, name, 98, 3, new GenericCubeBlockDesign(plugin, tex, idsoff));
 		desoff=(GenericCubeBlockDesign) getBlockDesign();
 		deson=new GenericCubeBlockDesign(plugin, tex, idson);
 		this.idson=idson;
