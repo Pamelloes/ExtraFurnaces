@@ -94,5 +94,10 @@ public class DiamondFurnaceGui extends FurnaceGui {
 	protected int getArrowY() {
 		return 52;
 	}
+
+	@Override
+	protected String getName() {
+		return "Diamond Furnace";
+	}
 	
 }

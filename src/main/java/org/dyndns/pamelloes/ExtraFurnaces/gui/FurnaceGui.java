@@ -59,6 +59,7 @@ public abstract class FurnaceGui extends InventoryGui{
     protected abstract int getFlameY();
     protected abstract int getArrowX();
     protected abstract int getArrowY();
+    protected abstract String getName();
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(int mouseX, int mouseY) {
@@ -81,7 +82,7 @@ public abstract class FurnaceGui extends InventoryGui{
 
 	@Override
 	protected void drawGuiContainerForegroundLayer() {
-		Spoutcraft.getMinecraftFont().drawString("Furnace", 60, 6, 0x404040);
+		Spoutcraft.getMinecraftFont().drawString(getName(), 60, 6, 0x404040);
 		Spoutcraft.getMinecraftFont().drawString("Inventory", 8, (getHeight() - 96) + 2, 0x404040);
 	}
 
