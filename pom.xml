@@ -4,7 +4,7 @@
 
   <groupId>org.dyndns.pamelloes</groupId>
   <artifactId>ExtraFurnaces</artifactId>
-  <version>1.0.4-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>ExtraFurnaces</name>
@@ -41,7 +41,7 @@
     <dependency>
     	<groupId>org.bukkit</groupId>
     	<artifactId>craftbukkit</artifactId>
-    	<version>1.2.4-R0.1-SNAPSHOT</version>
+    	<version>1.2.4-R1.1-SNAPSHOT</version>
     	<scope>compile</scope>
     </dependency>
     <dependency>

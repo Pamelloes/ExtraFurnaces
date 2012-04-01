@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Logger;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,16 +28,18 @@ import org.getspout.spoutapi.event.input.KeyPressedEvent;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.inventory.SpoutShapedRecipe;
 import org.getspout.spoutapi.io.AddonPacket;
-import org.getspout.spoutapi.keyboard.Keyboard;
 import org.getspout.spoutapi.material.CustomBlock;
 import org.getspout.spoutapi.material.MaterialData;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class ExtraFurnaces extends JavaPlugin {
-	public static Map<SpoutPlayer,CustomFurnaceData> map = new HashMap<SpoutPlayer, CustomFurnaceData>();
+	public static final int MINIMUM_SPOUTPLUGIN_VERSION = 1063;
 	
-	int[] furnaceoff = {0,2,1,1,1,0};
-	int[] furnaceon  = {0,3,4,4,4,0};
+	public static Map<SpoutPlayer,CustomFurnaceData> map = new HashMap<SpoutPlayer, CustomFurnaceData>();
+	public static Logger log = Logger.getLogger("minecraft");
+	
+	int[] furnaceoff = {0,1,1,2,1,0};
+	int[] furnaceon  = {0,4,4,3,4,0};
 	int ironfurnaceincr = 0;
 	int goldfurnaceincr = 5;
 	int diamondfurnaceincr = 10;
@@ -44,10 +47,14 @@ public class ExtraFurnaces extends JavaPlugin {
 	public static CustomBlock ironfurnace, goldfurnace, diamondfurnace;
 	
 	public void onEnable() {
-		if(Integer.parseInt(getServer().getPluginManager().getPlugin("Spout").getDescription().getVersion())<1003) {
-			System.out.println("[ExtraFurnaces] EXTRA FURNACES REQUIRES SPOUTPLUGIN VERSION 1003 OR NEWER!!!");
-			System.out.println("[ExtraFurnaces] EXTRA FURNACES WILL DISABLE ITSELF!");
-			getServer().getPluginManager().disablePlugin(this);
+		try {
+			if(Integer.parseInt(getServer().getPluginManager().getPlugin("Spout").getDescription().getVersion())<MINIMUM_SPOUTPLUGIN_VERSION) {
+				log.severe("[ExtraFurnaces] Extra Furnaces requires Spout version " + MINIMUM_SPOUTPLUGIN_VERSION + " or newer.");
+				log.severe("[ExtraFurnaces] Extra Furnaces will now disavle itself.");
+				getServer().getPluginManager().disablePlugin(this);
+			}
+		} catch(NumberFormatException e) {
+			log.warning("[ExtraFurnaces] Could not identify Spout version, incompatibilities may arise.");
 		}
 		extractFile("moreFurnaces.png",true);
 		registerItems();
@@ -59,7 +66,7 @@ public class ExtraFurnaces extends JavaPlugin {
 			@SuppressWarnings("unused")
 			@EventHandler
 			public void onKeyDown(KeyPressedEvent e) {
-				if(!e.getKey().equals(Keyboard.KEY_E)) return;
+				if(!e.getKey().equals(e.getPlayer().getInventoryKey())) return;
 				if(!map.keySet().contains(e.getPlayer())) return;
 				map.remove(e.getPlayer());
 				OpenGUIServer close = new OpenGUIServer();
@@ -67,11 +74,11 @@ public class ExtraFurnaces extends JavaPlugin {
 				close.send(e.getPlayer());
 			}
 		}, this);
-		System.out.println("[ExtraFurnaces] enabled.");
+		log.info("[ExtraFurnaces] Enabled.");
 	}
 
 	public void onDisable() {
-		System.out.println("[ExtraFurnaces] disabled.");
+		log.info("[ExtraFurnaces] Disabled.");
 	}
 	
 	private void registerItems() {

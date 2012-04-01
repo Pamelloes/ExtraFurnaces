@@ -31,18 +31,10 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 
 public abstract class CustomFurnace extends GenericCubeCustomBlock {
 	protected ExtraFurnaces plugin;
-	private Texture texture;
-	private int[] idson, idsoff;
-	private GenericCubeBlockDesign desoff, deson;
 	
 	public CustomFurnace(ExtraFurnaces plugin, String name, Texture tex, int[] idson,int[] idsoff) {
-		super(plugin, name, 98, 3, new GenericCubeBlockDesign(plugin, tex, idsoff));
-		desoff=(GenericCubeBlockDesign) getBlockDesign();
-		deson=new GenericCubeBlockDesign(plugin, tex, idson);
-		this.idson=idson;
-		this.idsoff=idsoff;
+		super(plugin, name, Material.FURNACE.getId(), 0, new GenericCubeBlockDesign(plugin, tex, idsoff));
 		this.plugin=plugin;
-		texture=tex;
 	}
 	
 	public abstract GUIType getGUIType();
@@ -50,8 +42,15 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
 	@Override
     public boolean onBlockInteract(World world, int x, int y, int z, SpoutPlayer player) {
 		if(!player.isSpoutCraftEnabled()) {
-			player.sendMessage(ChatColor.RED + "This is actually a special furnace and requires Spoutcraft for you to use it.");
-			player.sendMessage(ChatColor.RED + "You can get Spoutcraft at http://get.spout.org/");
+			player.sendMessage(ChatColor.RED + "");
+			player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + " This is a special furnace and requires Spoutcraft");
+			player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + " for you to use it. You can get Spoutcraft at ");
+			player.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + " http://get.spout.org/index.php");
+			player.sendMessage(ChatColor.RED + "");
+			player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + " If you are using Spoutcraft, please inform your server admin");
+			player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + " that they need to have " + ChatColor.GRAY + "\"AuthenticateSpoutcraft: true\"" + ChatColor.RED + "" + ChatColor.ITALIC + " in the");
+			player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + " server's Spout configuration.");
+			player.sendMessage(ChatColor.RED + "");
 			return true;
 		}
 		Map<String,String> addons = player.getAddons();
@@ -134,7 +133,7 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
 			player.getMainScreen().attachPopupScreen((PopupScreen) new GenericPopup().attachWidgets(plugin,wintitle,contitle,content1,content2,content3,content4,content5,content6,content7,content8,border,gradient,close));
 			return true;
 		}
-		if(!player.getAddons().containsKey("ExtraFurnaces")) {
+		if(!addons.containsKey("ExtraFurnaces")) {
 			// Window Title
 			GenericLabel wintitle = new GenericLabel("You need ExtraFurnaces!");
 			wintitle.setX(158).setY(25);
