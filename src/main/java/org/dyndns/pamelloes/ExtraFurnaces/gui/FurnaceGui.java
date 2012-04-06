@@ -1,12 +1,16 @@
 package org.dyndns.pamelloes.ExtraFurnaces.gui;
 
-import org.lwjgl.opengl.GL11;
-import org.spoutcraft.spoutcraftapi.Spoutcraft;
-import org.spoutcraft.spoutcraftapi.gui.PopupScreen;
+import org.getspout.spoutapi.gui.Color;
+import org.getspout.spoutapi.gui.GenericLabel;
+import org.getspout.spoutapi.gui.Label;
+import org.getspout.spoutapi.gui.RenderPriority;
+import org.getspout.spoutapi.gui.Texture;
+import org.getspout.spoutapi.gui.Widget;
+import org.getspout.spoutapi.gui.WidgetAnchor;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
 
 public abstract class FurnaceGui extends InventoryGui{
-	public static FurnaceGui current = null;
 	
     /** The number of ticks that the furnace will keep burning */
     public int furnaceBurnTime;
@@ -20,20 +24,13 @@ public abstract class FurnaceGui extends InventoryGui{
     public int furnaceCookTime;
     
     public int itemBurnTime;
-    
-    private String id;
-
-	public FurnaceGui(PopupScreen parent, int width, int height, String id) {
-		super(parent, width, height);
-		this.id = id;
-	}
 
     /**
      * Returns an integer between 0 and the passed value representing how close the current item is to being completely
      * cooked
      */
     public int getCookProgressScaled(int par1) {
-        return (furnaceCookTime * par1) / itemBurnTime;
+    	return (furnaceCookTime * par1) / itemBurnTime;
     }
 
     /**
@@ -55,35 +52,50 @@ public abstract class FurnaceGui extends InventoryGui{
         return furnaceBurnTime > 0;
     }
     
+    private Texture arrow, flame;
+    private Label name, inv;
+    
     protected abstract int getFlameX();
     protected abstract int getFlameY();
     protected abstract int getArrowX();
     protected abstract int getArrowY();
     protected abstract String getName();
 
+	public FurnaceGui(SpoutPlayer sp, int width, int height) {
+		super(sp, width, height);
+		flame = getBackground();
+		flame.setLeft(width).setTop(12).setWidth(14).setHeight(2).setFixed(true);
+		flame.setY(getFlameY() + 12).setX(getFlameX()).setPriority(RenderPriority.Lowest).setAnchor(WidgetAnchor.TOP_LEFT);
+		arrow = getBackground();
+		arrow.setLeft(width).setTop(14).setWidth(1).setHeight(16).setFixed(true);
+		arrow.setX(getArrowX()).setY(getArrowY()).setPriority(RenderPriority.Lowest).setAnchor(WidgetAnchor.TOP_LEFT);
+		name = new GenericLabel(getName());
+		name.setTextColor(new Color(64,64,64)).setShadow(false).setX(60).setY(6).setWidth(-1).setHeight(-1).setPriority(RenderPriority.Low);
+		inv = new GenericLabel("Inventory");
+		inv.setTextColor(new Color(64,64,64)).setShadow(false).setX(8).setY(height - 94).setWidth(-1).setHeight(-1).setPriority(RenderPriority.Low);
+	}
+    
 	@Override
-	protected void drawGuiContainerBackgroundLayer(int mouseX, int mouseY) {
-		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, TextureUtils.getInstance(id).getId());
-		int j = getX();
-		int k = getY();
-		drawTexturedModalRect(j, k, 0, 0, getWidth(), getHeight());
-
+	public void onTick() {
 		if (isBurning()) {
+			flame.setVisible(true);
 			int l = getBurnTimeRemainingScaled(12);
-			drawTexturedModalRect(j + getFlameX(), (k + getFlameY() + 12) - l, getWidth(), 12 - l, 14, l + 2);
+			flame.setTop(12 - l).setHeight(l + 2).setY(getFlameY() - (getHeight()/2) + 12 - l);
+		} else {
+			flame.setVisible(false);
 		}
-
-		int i1 = getCookProgressScaled(24);
-		drawTexturedModalRect(j + getArrowX(), k + getArrowY(), getWidth(), 14, i1 + 1, 16);
-		GL11.glEnable(GL11.GL_LIGHTING);
+		arrow.setWidth(getCookProgressScaled(24) + 1);
+	}
+	
+	@Override
+	public Widget[] getWidgets() {
+		return new Widget[]{ name, inv, flame, arrow };
 	}
 
-	@Override
+	/*@Override
 	protected void drawGuiContainerForegroundLayer() {
 		Spoutcraft.getMinecraftFont().drawString(getName(), 60, 6, 0x404040);
 		Spoutcraft.getMinecraftFont().drawString("Inventory", 8, (getHeight() - 96) + 2, 0x404040);
-	}
+	}*/
 
 }

@@ -5,15 +5,16 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.dyndns.pamelloes.ExtraFurnaces.ExtraFurnaces;
 import org.dyndns.pamelloes.ExtraFurnaces.data.DiamondFurnaceData;
-import org.dyndns.pamelloes.ExtraFurnaces.packet.OpenGUI.GUIType;
+import org.dyndns.pamelloes.ExtraFurnaces.gui.DiamondFurnaceGui;
+import org.dyndns.pamelloes.ExtraFurnaces.gui.FurnaceGui;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.design.Texture;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class DiamondFurnace extends CustomFurnace {
 
-	public DiamondFurnace(ExtraFurnaces plugin, Texture texture, int[] designon, int[] designoff) {
-		super(plugin, "Diamond Furnace", texture, designon, designoff);
+	public DiamondFurnace(ExtraFurnaces plugin, Texture texture, int[] ids, boolean on) {
+		super(plugin, "Diamond Furnace", texture, ids, on);
 	}
 	
 	@Override
@@ -41,7 +42,7 @@ public class DiamondFurnace extends CustomFurnace {
     }
 
 	@Override
-	public GUIType getGUIType() {
-		return GUIType.DiamondFurnace;
+	public FurnaceGui getGui(SpoutPlayer player) {
+		return new DiamondFurnaceGui(player);
 	}
 }

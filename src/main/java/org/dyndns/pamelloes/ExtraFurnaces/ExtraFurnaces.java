@@ -18,24 +18,24 @@ import org.dyndns.pamelloes.ExtraFurnaces.block.DiamondFurnace;
 import org.dyndns.pamelloes.ExtraFurnaces.block.GoldFurnace;
 import org.dyndns.pamelloes.ExtraFurnaces.block.IronFurnace;
 import org.dyndns.pamelloes.ExtraFurnaces.data.CustomFurnaceData;
-import org.dyndns.pamelloes.ExtraFurnaces.packet.ChangeDataServer;
-import org.dyndns.pamelloes.ExtraFurnaces.packet.ChangeInventoryServer;
-import org.dyndns.pamelloes.ExtraFurnaces.packet.OpenGUIServer;
-import org.dyndns.pamelloes.ExtraFurnaces.packet.OpenGUI.GUIType;
+import org.dyndns.pamelloes.ExtraFurnaces.gui.FurnaceGui;
+import org.dyndns.pamelloes.ExtraFurnaces.gui.InventoryGui;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.design.Texture;
 import org.getspout.spoutapi.event.input.KeyPressedEvent;
+import org.getspout.spoutapi.event.screen.ScreenCloseEvent;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.inventory.SpoutShapedRecipe;
-import org.getspout.spoutapi.io.AddonPacket;
 import org.getspout.spoutapi.material.CustomBlock;
 import org.getspout.spoutapi.material.MaterialData;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class ExtraFurnaces extends JavaPlugin {
-	public static final int MINIMUM_SPOUTPLUGIN_VERSION = 1063;
+	public static final int MINIMUM_SPOUTPLUGIN_VERSION = 1090;
+	public static final int MINIMUM_SPOUTCRAFT_VERSION = 1356;
 	
-	public static Map<SpoutPlayer,CustomFurnaceData> map = new HashMap<SpoutPlayer, CustomFurnaceData>();
+	public static Map<SpoutPlayer,CustomFurnaceData> datamap = new HashMap<SpoutPlayer, CustomFurnaceData>();
+	public static Map<SpoutPlayer,FurnaceGui> guimap = new HashMap<SpoutPlayer, FurnaceGui>();
 	public static Logger log = Logger.getLogger("minecraft");
 	
 	int[] furnaceoff = {0,1,1,2,1,0};
@@ -44,7 +44,7 @@ public class ExtraFurnaces extends JavaPlugin {
 	int goldfurnaceincr = 5;
 	int diamondfurnaceincr = 10;
 	
-	public static CustomBlock ironfurnace, goldfurnace, diamondfurnace;
+	public static CustomBlock ironfurnaceoff, ironfurnaceon, goldfurnaceoff, goldfurnaceon, diamondfurnaceoff, diamondfurnaceon;
 	
 	public void onEnable() {
 		try {
@@ -57,21 +57,31 @@ public class ExtraFurnaces extends JavaPlugin {
 			log.warning("[ExtraFurnaces] Could not identify Spout version, incompatibilities may arise.");
 		}
 		extractFile("moreFurnaces.png",true);
+		extractFile("ironfurnace.png",true);
+		extractFile("goldfurnace.png",true);
+		extractFile("diamondfurnace.png",true);
 		registerItems();
 		registerRecipes();
-		AddonPacket.register(OpenGUIServer.class, "OGUI");
-		AddonPacket.register(ChangeInventoryServer.class, "CInv");
-		AddonPacket.register(ChangeDataServer.class, "CData");
 		getServer().getPluginManager().registerEvents(new Listener() {
 			@SuppressWarnings("unused")
 			@EventHandler
 			public void onKeyDown(KeyPressedEvent e) {
 				if(!e.getKey().equals(e.getPlayer().getInventoryKey())) return;
-				if(!map.keySet().contains(e.getPlayer())) return;
-				map.remove(e.getPlayer());
-				OpenGUIServer close = new OpenGUIServer();
-				close.setType(GUIType.CloseGui.ordinal());
-				close.send(e.getPlayer());
+				if(!datamap.keySet().contains(e.getPlayer())) return;
+				datamap.remove(e.getPlayer());
+				guimap.remove(e.getPlayer());
+				e.getPlayer().getMainScreen().closePopup();
+			}
+		}, this);
+		getServer().getPluginManager().registerEvents(new Listener() {
+			@SuppressWarnings("unused")
+			@EventHandler
+			public void onScreenClose(ScreenCloseEvent e) {
+				if(e.isCancelled()) return;
+				if(!(e.getScreen() instanceof InventoryGui)) return;
+				CustomFurnaceData dat = datamap.get(e.getPlayer());
+				if(dat!=null) dat.onPlayerCloseFurnace(e.getPlayer());
+				((InventoryGui) e.getScreen()).onClose();
 			}
 		}, this);
 		log.info("[ExtraFurnaces] Enabled.");
@@ -83,31 +93,48 @@ public class ExtraFurnaces extends JavaPlugin {
 	
 	private void registerItems() {
 		Texture texture = new Texture(this,"plugins/ExtraFurnaces/moreFurnaces.png",256,256,16);
-		ironfurnace = new IronFurnace(this, texture, incrementArray(furnaceon,ironfurnaceincr), incrementArray(furnaceoff,ironfurnaceincr));
-		goldfurnace = new GoldFurnace(this,texture, incrementArray(furnaceon,goldfurnaceincr), incrementArray(furnaceoff,goldfurnaceincr));
-		diamondfurnace = new DiamondFurnace(this, texture, incrementArray(furnaceon,diamondfurnaceincr), incrementArray(furnaceoff,diamondfurnaceincr));
+		ironfurnaceoff = new IronFurnace(this, texture, incrementArray(furnaceoff,ironfurnaceincr), false);
+		ironfurnaceon = new IronFurnace(this, texture, incrementArray(furnaceon,ironfurnaceincr), true);
+		goldfurnaceoff = new GoldFurnace(this, texture, incrementArray(furnaceoff,goldfurnaceincr), false);
+		goldfurnaceon = new GoldFurnace(this, texture, incrementArray(furnaceon,goldfurnaceincr), true);
+		diamondfurnaceoff = new DiamondFurnace(this, texture, incrementArray(furnaceoff,diamondfurnaceincr), false);
+		diamondfurnaceon = new DiamondFurnace(this, texture, incrementArray(furnaceon,diamondfurnaceincr), true);
 	}
 	
 	private void registerRecipes() {
-		ItemStack result = new SpoutItemStack(ironfurnace, 1);
+		ItemStack result = new SpoutItemStack(ironfurnaceoff, 1);
 		SpoutShapedRecipe recipe = new SpoutShapedRecipe(result);
 		recipe.shape("AAA", "ABA", "AAA");
 		recipe.setIngredient('A', MaterialData.ironIngot);
 		recipe.setIngredient('B', MaterialData.furnace);
 		SpoutManager.getMaterialManager().registerSpoutRecipe(recipe);
 		
-		result = new SpoutItemStack(goldfurnace, 1);
+		result = new SpoutItemStack(goldfurnaceoff, 1);
 		recipe = new SpoutShapedRecipe(result);
 		recipe.shape("AAA", "ABA", "AAA");
 		recipe.setIngredient('A', MaterialData.goldIngot);
-		recipe.setIngredient('B', ironfurnace);
+		recipe.setIngredient('B', ironfurnaceoff);
+		SpoutManager.getMaterialManager().registerSpoutRecipe(recipe);
+		
+		result = new SpoutItemStack(goldfurnaceoff, 1);
+		recipe = new SpoutShapedRecipe(result);
+		recipe.shape("AAA", "ABA", "AAA");
+		recipe.setIngredient('A', MaterialData.goldIngot);
+		recipe.setIngredient('B', ironfurnaceon);
 		SpoutManager.getMaterialManager().registerSpoutRecipe(recipe);
 
-		result = new SpoutItemStack(diamondfurnace, 1);
+		result = new SpoutItemStack(diamondfurnaceoff, 1);
 		recipe = new SpoutShapedRecipe(result);
 		recipe.shape("AAA", "ABA", "AAA");
 		recipe.setIngredient('A', MaterialData.diamond);
-		recipe.setIngredient('B', goldfurnace);
+		recipe.setIngredient('B', goldfurnaceoff);
+		SpoutManager.getMaterialManager().registerSpoutRecipe(recipe);
+
+		result = new SpoutItemStack(diamondfurnaceoff, 1);
+		recipe = new SpoutShapedRecipe(result);
+		recipe.shape("AAA", "ABA", "AAA");
+		recipe.setIngredient('A', MaterialData.diamond);
+		recipe.setIngredient('B', goldfurnaceon);
 		SpoutManager.getMaterialManager().registerSpoutRecipe(recipe);
 	}
 	

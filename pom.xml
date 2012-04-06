@@ -59,10 +59,6 @@
 	  <id>spout-repo</id>
 	  <url>http://repo.spout.org/</url>
 	</repository>
-	<repository>
-	  <id>nexis-public</id>
-	  <url>http://repo.nexisonline.net:8080/nexus/content/groups/public/</url>
-	</repository>
   </repositories>
   <modules>
   </modules>

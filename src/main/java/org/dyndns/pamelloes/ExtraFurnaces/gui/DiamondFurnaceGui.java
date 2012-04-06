@@ -1,78 +1,43 @@
 package org.dyndns.pamelloes.ExtraFurnaces.gui;
 
 import java.awt.Point;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.InputStream;
-import java.net.URLDecoder;
-import java.nio.ByteBuffer;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
 
-import javax.imageio.ImageIO;
-
-import org.dyndns.pamelloes.ExtraFurnaces.client.ExtraFurnacesClient;
-import org.spoutcraft.spoutcraftapi.gui.PopupScreen;
+import org.getspout.spoutapi.gui.GenericTexture;
+import org.getspout.spoutapi.gui.Texture;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
 
 public class DiamondFurnaceGui extends FurnaceGui {
 
-	public DiamondFurnaceGui(PopupScreen parent) {
-		super(parent, 216, 202, "DiamondFurnace");
+	public DiamondFurnaceGui(SpoutPlayer sp) {
+		super(sp, 216, 202);
 		//input
-		addSlot(new InventorySlot(8,17));
-		addSlot(new InventorySlot(26,17));
-		addSlot(new InventorySlot(44,17));
-		addSlot(new InventorySlot(8,35));
-		addSlot(new InventorySlot(26,35));
-		addSlot(new InventorySlot(44,35));
-		addSlot(new InventorySlot(62,35));
+		addSlot(new InventorySlot(8,17,this));
+		addSlot(new InventorySlot(26,17,this));
+		addSlot(new InventorySlot(44,17,this));
+		addSlot(new InventorySlot(8,35,this));
+		addSlot(new InventorySlot(26,35,this));
+		addSlot(new InventorySlot(44,35,this));
+		addSlot(new InventorySlot(62,35,this));
 		//fuel
-		addSlot(new InventorySlot(8,89));
-		addSlot(new InventorySlot(26,89));
-		addSlot(new InventorySlot(44,89));
-		addSlot(new InventorySlot(8,71));
-		addSlot(new InventorySlot(26,71));
-		addSlot(new InventorySlot(44,71));
-		addSlot(new InventorySlot(62,71));
+		addSlot(new InventorySlot(8,89,this));
+		addSlot(new InventorySlot(26,89,this));
+		addSlot(new InventorySlot(44,89,this));
+		addSlot(new InventorySlot(8,71,this));
+		addSlot(new InventorySlot(26,71,this));
+		addSlot(new InventorySlot(44,71,this));
+		addSlot(new InventorySlot(62,71,this));
 		//output
-		addSlot(new InventorySlot(116,53).setReadOnly(true));
-		addSlot(new InventorySlot(138,39).setReadOnly(true));
-		addSlot(new InventorySlot(156,39).setReadOnly(true));
-		addSlot(new InventorySlot(174,39).setReadOnly(true));
-		addSlot(new InventorySlot(192,39).setReadOnly(true));
-		addSlot(new InventorySlot(138,57).setReadOnly(true));
-		addSlot(new InventorySlot(156,57).setReadOnly(true));
-		addSlot(new InventorySlot(174,57).setReadOnly(true));
-		addSlot(new InventorySlot(192,57).setReadOnly(true));
-	}
-
-	@Override
-	public Point getInventoryOffset() {
-		return new Point(28, 120);
-	}
-	
-	static {
-		try {
-			// Load the image from the jar? :O
-
-			// Instead of using a hardcoded .jar file name, get whatever
-			// .jar contains this addon's code
-			File jarFile = new File(URLDecoder.decode(ExtraFurnacesClient.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath(), "UTF-8"));
-			JarFile jar = new JarFile(jarFile);
-			ZipEntry ze = jar.getEntry("diamondfurnace.png");
-			InputStream is = jar.getInputStream(ze);
-			BufferedImage bmg = ImageIO.read(is);
-			// Don't forget cleanup!
-			is.close();
-			jar.close();
-			
-			ByteBuffer buff = TextureUtils.convertImageData(bmg, 256);
-			TextureUtils.getInstance("DiamondFurnace").initialUpload(buff, 256);
-			buff.clear();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		addSlot(new InventorySlot(116,53,this).setReadOnly(true));
+		addSlot(new InventorySlot(138,39,this).setReadOnly(true));
+		addSlot(new InventorySlot(156,39,this).setReadOnly(true));
+		addSlot(new InventorySlot(174,39,this).setReadOnly(true));
+		addSlot(new InventorySlot(192,39,this).setReadOnly(true));
+		addSlot(new InventorySlot(138,57,this).setReadOnly(true));
+		addSlot(new InventorySlot(156,57,this).setReadOnly(true));
+		addSlot(new InventorySlot(174,57,this).setReadOnly(true));
+		addSlot(new InventorySlot(192,57,this).setReadOnly(true));
+		itemBurnTime = 40;
 	}
 
 	@Override
@@ -99,5 +64,16 @@ public class DiamondFurnaceGui extends FurnaceGui {
 	protected String getName() {
 		return "Diamond Furnace";
 	}
-	
+
+	@Override
+	protected Texture getBackground() {
+		Texture t = new GenericTexture("plugins/ExtraFurnaces/diamondfurnace.png");
+		t.setLeft(0).setTop(0).setWidth(216).setHeight(202);
+		return t;
+	}
+
+	@Override
+	public Point getInventoryOffset() {
+		return new Point(28, 120);
+	}
 }

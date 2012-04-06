@@ -17,15 +17,15 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import org.dyndns.pamelloes.ExtraFurnaces.packet.ChangeDataServer;
-import org.dyndns.pamelloes.ExtraFurnaces.packet.ChangeInventoryServer;
+import org.dyndns.pamelloes.ExtraFurnaces.ExtraFurnaces;
+import org.dyndns.pamelloes.ExtraFurnaces.gui.FurnaceGui;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.event.spout.ServerTickEvent;
+import org.getspout.spoutapi.material.CustomBlock;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 @SuppressWarnings("serial")
 public abstract class CustomFurnaceData implements Serializable, Listener {
-	private static final ItemStack empty = new ItemStack(0,0,(short) 0);
     protected transient ItemStack furnaceItemStacks[];
 	protected transient List<SpoutPlayer> players = new ArrayList<SpoutPlayer>();
 
@@ -79,10 +79,8 @@ public abstract class CustomFurnaceData implements Serializable, Listener {
         furnaceItemStacks[par1] = par2ItemStack;
 
         if (par2ItemStack != null && par2ItemStack.getAmount() > 64) par2ItemStack.setAmount(64);
-
-		ChangeInventoryServer cis = new ChangeInventoryServer();
-		cis.setData(36 + par1, furnaceItemStacks[par1]==null?empty:furnaceItemStacks[par1]);
-		cis.send(players);
+        
+        updateInventory();
     }
 
     /**
@@ -124,12 +122,14 @@ public abstract class CustomFurnaceData implements Serializable, Listener {
     	//80 = gold furnace
     	//40 = diamond furnace
     }
+    protected abstract CustomBlock getBlock(boolean burning);
     
     /**
      * Updates the furnace.
      * @return true if there has been a change in the inventory.
      */
     public boolean update() {
+    	if(Bukkit.getWorld(world).getBlockAt(x, y, z).getData() != 3) Bukkit.getWorld(world).getBlockAt(x, y, z).setData((byte) 3);
         boolean flag = furnaceBurnTime > 0;
         boolean flag1 = false;
 
@@ -163,8 +163,9 @@ public abstract class CustomFurnaceData implements Serializable, Listener {
 
 		if (flag != (furnaceBurnTime > 0)) {
 			flag1 = true;
-			/*BlockFurnace.updateFurnaceBlockState(furnaceBurnTime > 0, worldObj,
-					xCoord, yCoord, zCoord);*/
+			CustomBlock block = getBlock(isBurning());
+			Bukkit.getWorld(world).getBlockAt(x, y, z).setTypeIdAndData(block.getBlockId(), (byte) block.getBlockData(), true);
+			SpoutManager.getMaterialManager().overrideBlock(Bukkit.getWorld(world), x, y, z, block);
 		}
 
         return flag1;
@@ -240,7 +241,7 @@ public abstract class CustomFurnaceData implements Serializable, Listener {
     
     public void onPlayerOpenFurnace(SpoutPlayer player) {
     	players.add(player);
-    	sendInventory();
+    	updateInventory();
     }
     
     public void onPlayerCloseFurnace(SpoutPlayer player) {
@@ -301,19 +302,24 @@ public abstract class CustomFurnaceData implements Serializable, Listener {
 		}
 	}
 	
-	protected void sendInventory() {
-		ChangeInventoryServer cis = new ChangeInventoryServer();
-		for(int i = 0; i < furnaceItemStacks.length; i++) {
-			cis.setData(36 + i, furnaceItemStacks[i]==null?empty:furnaceItemStacks[i]);
-			cis.send(players);
+	protected void updateData() {
+		for(SpoutPlayer p : players) {
+			FurnaceGui gui = ExtraFurnaces.guimap.get(p);
+			if(gui==null) continue;
+			gui.currentItemBurnTime=currentItemBurnTime;
+			gui.furnaceBurnTime=furnaceBurnTime;
+			gui.furnaceCookTime=furnaceCookTime;
 		}
 	}
 	
-	protected void sendData() {
-		ChangeDataServer cda = new ChangeDataServer();
-		cda.currentItemBurnTime=currentItemBurnTime;
-		cda.furnaceBurnTime=furnaceBurnTime;
-		cda.furnaceCookTime=furnaceCookTime;
-		cda.send(players);
+	protected void updateInventory() {
+		for(SpoutPlayer p : players) {
+			FurnaceGui gui = ExtraFurnaces.guimap.get(p);
+			if(gui==null) continue;
+			for(int i = 0; i < furnaceItemStacks.length; i++) {
+				if (furnaceItemStacks[i] == null) gui.clearContents(i + 36, false);
+				else gui.setContents(i + 36, furnaceItemStacks[i], false);
+			}
+		}
 	}
 }
