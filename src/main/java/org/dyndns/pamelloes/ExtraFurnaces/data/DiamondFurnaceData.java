@@ -51,4 +51,8 @@ public class DiamondFurnaceData extends CustomFurnaceData {
 	protected CustomBlock getBlock(boolean burning) {
 		return burning ? ExtraFurnaces.diamondfurnaceon : ExtraFurnaces.diamondfurnaceoff;
 	}
+
+	public String getName() {
+		return "Diamond Furnace";
+	}
 }

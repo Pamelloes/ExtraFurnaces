@@ -6,9 +6,16 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.dyndns.pamelloes.ExtraFurnaces.ExtraFurnaces;
+import org.getspout.spoutapi.gui.Container;
 import org.getspout.spoutapi.gui.ContainerType;
 import org.getspout.spoutapi.gui.GenericContainer;
 import org.getspout.spoutapi.gui.GenericPopup;
@@ -19,8 +26,9 @@ import org.getspout.spoutapi.gui.Widget;
 import org.getspout.spoutapi.gui.WidgetAnchor;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
-public abstract class InventoryGui extends GenericContainer {
+public abstract class InventoryGui extends InventoryView {
 	private SpoutPlayer sp;
+	private Container cont;
 	
 	private int width;
 	private int height;
@@ -34,6 +42,7 @@ public abstract class InventoryGui extends GenericContainer {
 		this.height = height;
 		sp = p;
 		inventory = p.getInventory();
+		cont = new GenericContainer();
 		for(int i = 0; i < 36; i++) {
 			Point loc = getSlotLocation(i);
 			InventorySlot s = new InventorySlot((int) loc.getX(), (int) loc.getY(), this);
@@ -42,18 +51,28 @@ public abstract class InventoryGui extends GenericContainer {
 		}
 	}
 	
-	public void makeGui() {
-		setLayout(ContainerType.OVERLAY).setAnchor(WidgetAnchor.CENTER_CENTER).setWidth(width).setHeight(height).setX(-width/2).setY(-height/2);
-		addChild(getBackground().setPriority(RenderPriority.High));
-		for(int i = 0; i < slots.size(); i++) addChild(slots.get(i));
-		for(Widget w : getWidgets()) addChild(w);
+	public boolean makeGui() {
+		InventoryOpenEvent ioe = new InventoryOpenEvent(this);
+		Bukkit.getPluginManager().callEvent(ioe);
+		if(ioe.isCancelled()) return false;
+		cont.setLayout(ContainerType.OVERLAY).setAnchor(WidgetAnchor.CENTER_CENTER).setWidth(width).setHeight(height).setX(-width/2).setY(-height/2);
+		cont.addChild(getBackground().setPriority(RenderPriority.High));
+		for(int i = 0; i < slots.size(); i++) cont.addChild(slots.get(i));
+		for(Widget w : getWidgets()) cont.addChild(w);
 		sp.getMainScreen().attachPopupScreen((PopupScreen) new GenericPopup() {
 			@Override
 			public void handleItemOnCursor(ItemStack is) {
 				if(is.getTypeId() == 0 || is.getAmount() == 0) return;
 				eject(is);
 			}
-		}.attachWidget(Bukkit.getPluginManager().getPlugin("ExtraFurnaces"), this));
+			
+			@Override
+			public void onTick() {
+				super.onTick();
+				InventoryGui.this.onTick();
+			}
+		}.attachWidget(Bukkit.getPluginManager().getPlugin("ExtraFurnaces"), cont));
+		return true;
 	}
 	
 	protected abstract Texture getBackground();
@@ -171,9 +190,33 @@ public abstract class InventoryGui extends GenericContainer {
 	}
 	
 	public void onClose() {
+		InventoryCloseEvent icv = new InventoryCloseEvent(this);
+		Bukkit.getPluginManager().callEvent(icv);
 		ExtraFurnaces.datamap.remove(sp);
 		ExtraFurnaces.guimap.remove(sp);
 	}
 	
 	public Widget[] getWidgets() { return new Widget[0]; }
+
+	@Override
+	public Inventory getTopInventory() {
+		return inventory;
+	}
+
+	@Override
+	public Inventory getBottomInventory() {
+		return ExtraFurnaces.datamap.get(sp);
+	}
+
+	@Override
+	public HumanEntity getPlayer() {
+		return sp;
+	}
+
+	@Override
+	public InventoryType getType() {
+		return InventoryType.FURNACE;
+	}
+	
+	public void onTick() {}
 }

@@ -41,12 +41,16 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
 	@Override
     public boolean onBlockInteract(World world, int x, int y, int z, SpoutPlayer player) {
 		if(!validateClient(player)) return true;
-		FurnaceGui gui = getGui(player);
-		ExtraFurnaces.guimap.put(player, gui);
 		CustomFurnaceData dat = (CustomFurnaceData) SpoutManager.getChunkDataManager().getBlockData("ExtraFurnaces", world, x, y, z);
 		ExtraFurnaces.datamap.put(player, dat);
-		gui.makeGui();
-		dat.onPlayerOpenFurnace(player);
+		FurnaceGui gui = getGui(player);
+		ExtraFurnaces.guimap.put(player, gui);
+		if(gui.makeGui()) {
+			dat.onPlayerOpenFurnace(player);
+		} else {
+			ExtraFurnaces.guimap.remove(player);
+			ExtraFurnaces.datamap.remove(player);
+		}
 		return true;
     }
 
@@ -66,7 +70,7 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
 		}
 		SpoutManager.getChunkDataManager().removeBlockData("ExtraFurnaces", world, x, y, z);
 		Location loc = new Location(world,x,y,z);
-		for(int i = 0; i < dat.getSizeInventory(); i++) if(dat.getStackInSlot(i)!=null) world.dropItem(loc, dat.getStackInSlot(i));
+		for(int i = 0; i < dat.getSize(); i++) if(dat.getStackInSlot(i)!=null) world.dropItem(loc, dat.getStackInSlot(i));
         HandlerList.unregisterAll(dat);
 	}
 	

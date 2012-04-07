@@ -51,12 +51,6 @@ public class GoldFurnaceGui extends FurnaceGui {
 	}
 
 	@Override
-	protected String getName() {
-		return "Gold Furnace";
-	}
-	
-
-	@Override
 	protected Texture getBackground() {
 		Texture t = new GenericTexture("plugins/ExtraFurnaces/goldfurnace.png");
 		t.setLeft(0).setTop(0).setWidth(216).setHeight(166);

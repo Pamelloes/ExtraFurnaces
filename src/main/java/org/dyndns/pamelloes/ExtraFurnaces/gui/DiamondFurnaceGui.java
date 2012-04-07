@@ -61,11 +61,6 @@ public class DiamondFurnaceGui extends FurnaceGui {
 	}
 
 	@Override
-	protected String getName() {
-		return "Diamond Furnace";
-	}
-
-	@Override
 	protected Texture getBackground() {
 		Texture t = new GenericTexture("plugins/ExtraFurnaces/diamondfurnace.png");
 		t.setLeft(0).setTop(0).setWidth(216).setHeight(202);

@@ -54,11 +54,6 @@ public class IronFurnaceGui extends FurnaceGui {
 	}
 
 	@Override
-	protected String getName() {
-		return "Iron Furnace";
-	}
-
-	@Override
 	protected Texture getBackground() {
 		Texture t = new GenericTexture("plugins/ExtraFurnaces/ironfurnace.png");
 		t.setLeft(0).setTop(0).setWidth(176).setHeight(166);
