@@ -42,11 +42,11 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
     public boolean onBlockInteract(World world, int x, int y, int z, SpoutPlayer player) {
 		if(!validateClient(player)) return true;
 		FurnaceGui gui = getGui(player);
-		gui.makeGui();
 		ExtraFurnaces.guimap.put(player, gui);
 		CustomFurnaceData dat = (CustomFurnaceData) SpoutManager.getChunkDataManager().getBlockData("ExtraFurnaces", world, x, y, z);
-		dat.onPlayerOpenFurnace(player);
 		ExtraFurnaces.datamap.put(player, dat);
+		gui.makeGui();
+		dat.onPlayerOpenFurnace(player);
 		return true;
     }
 

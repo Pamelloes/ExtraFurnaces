@@ -2,6 +2,7 @@ package org.dyndns.pamelloes.ExtraFurnaces.gui;
 
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.gui.GenericSlot;
+import org.getspout.spoutapi.gui.Slot;
 
 public class InventorySlot extends GenericSlot {
 	private boolean readonly = false;
@@ -30,20 +31,27 @@ public class InventorySlot extends GenericSlot {
 	
 	@Override
 	public boolean onItemTake(ItemStack i) {
-		gui.clearContents(this);
 		return true;
 	}
 	
 	@Override
 	public boolean onItemPut(ItemStack i) {
 		if(readonly) return false;
-		gui.setContents(this, i);
 		return true;
 	}
 	
 	@Override
 	public boolean onItemExchange(ItemStack i, ItemStack j) {
-		gui.setContents(this, j);
 		return true;
+	}
+	
+	@Override
+	public Slot setItem(ItemStack is) {
+		return setItem(is, true);
+	}
+	
+	public Slot setItem(ItemStack is, boolean update) {
+		if(update) gui.updateContents(this, is);
+		return super.setItem(is);
 	}
 }

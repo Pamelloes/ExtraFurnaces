@@ -37,7 +37,7 @@ public abstract class InventoryGui extends GenericContainer {
 		for(int i = 0; i < 36; i++) {
 			Point loc = getSlotLocation(i);
 			InventorySlot s = new InventorySlot((int) loc.getX(), (int) loc.getY(), this);
-			s.setItem(inventory.getItem(i));
+			s.setItem(inventory.getItem(i), false);
 			addSlot(s);
 		}
 	}
@@ -102,13 +102,8 @@ public abstract class InventoryGui extends GenericContainer {
 	}
 	
 	public void setContents(int id, ItemStack contents, boolean update) {
-		slots.get(id).setItem(contents);
-		if(!update) return;
-		if(id < 36) {
-			inventory.setItem(id, contents);
-		} else {
-			ExtraFurnaces.datamap.get(sp).setInventorySlotContents(id - 36, contents);
-		}
+		slots.get(id).setItem(contents, false);
+		if(update) updateContents(id, null);
 	}
 	
 	/**
@@ -125,10 +120,26 @@ public abstract class InventoryGui extends GenericContainer {
 	}
 	
 	public void clearContents(int id, boolean update) {
-		slots.get(id).setItem(new ItemStack(0));
-		if(!update) return;
-		if(id < 36) inventory.clear(id);
-		else ExtraFurnaces.datamap.get(sp).setInventorySlotContents(id - 36, null);
+		slots.get(id).setItem(new ItemStack(0), false);
+		if(update) updateContents(id, null);
+	}
+	
+	/**
+	 * Copies the ItemStack's contents to a
+	 * more permanent location.
+	 */
+	public void updateContents(InventorySlot slot, ItemStack contents) {
+		int id = slots.indexOf(slot);
+		if(id >= 0) updateContents(id, contents);
+	}
+	
+	public void updateContents(int id, ItemStack is) {
+		if(id < 36) {
+			if(is == null) inventory.clear(id);
+			else inventory.setItem(id, is);
+		} else {
+			ExtraFurnaces.datamap.get(sp).setInventorySlotContents(id - 36, is);
+		}
 	}
 	
 	public void eject(ItemStack is) {
