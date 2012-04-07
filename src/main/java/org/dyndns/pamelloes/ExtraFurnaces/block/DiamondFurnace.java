@@ -8,6 +8,7 @@ import org.dyndns.pamelloes.ExtraFurnaces.data.DiamondFurnaceData;
 import org.dyndns.pamelloes.ExtraFurnaces.gui.DiamondFurnaceGui;
 import org.dyndns.pamelloes.ExtraFurnaces.gui.FurnaceGui;
 import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.block.SpoutBlock;
 import org.getspout.spoutapi.block.design.Texture;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
@@ -22,6 +23,7 @@ public class DiamondFurnace extends CustomFurnace {
 
 	@Override
     public void onBlockPlace(World world, int x, int y, int z) {
+		if(((SpoutBlock)world.getBlockAt(x, y, z)).getCustomBlock() instanceof CustomFurnace) return;
 		SpoutManager.getChunkDataManager().setBlockData("ExtraFurnaces", world, x, y, z, new DiamondFurnaceData(world.getUID(),x,y,z));
 	}
 

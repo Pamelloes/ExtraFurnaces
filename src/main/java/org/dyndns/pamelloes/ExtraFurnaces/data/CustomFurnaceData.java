@@ -166,6 +166,7 @@ public abstract class CustomFurnaceData implements Serializable, Listener {
 			CustomBlock block = getBlock(isBurning());
 			Bukkit.getWorld(world).getBlockAt(x, y, z).setTypeIdAndData(block.getBlockId(), (byte) block.getBlockData(), true);
 			SpoutManager.getMaterialManager().overrideBlock(Bukkit.getWorld(world), x, y, z, block);
+    		SpoutManager.getChunkDataManager().setBlockData("ExtraFurnaces", Bukkit.getWorld(world), x, y, z, CustomFurnaceData.this);
 		}
 
         return flag1;

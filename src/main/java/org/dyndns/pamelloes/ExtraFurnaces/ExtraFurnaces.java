@@ -78,10 +78,11 @@ public class ExtraFurnaces extends JavaPlugin {
 			@EventHandler
 			public void onScreenClose(ScreenCloseEvent e) {
 				if(e.isCancelled()) return;
-				if(!(e.getScreen() instanceof InventoryGui)) return;
+				if(!datamap.keySet().contains(e.getPlayer())) return;
 				CustomFurnaceData dat = datamap.get(e.getPlayer());
 				if(dat!=null) dat.onPlayerCloseFurnace(e.getPlayer());
-				((InventoryGui) e.getScreen()).onClose();
+				InventoryGui gui = guimap.get(e.getPlayer());
+				gui.onClose();
 			}
 		}, this);
 		log.info("[ExtraFurnaces] Enabled.");
