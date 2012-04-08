@@ -31,8 +31,8 @@ import org.getspout.spoutapi.material.MaterialData;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class ExtraFurnaces extends JavaPlugin {
-	public static final int MINIMUM_SPOUTPLUGIN_VERSION = 1090;
-	public static final int MINIMUM_SPOUTCRAFT_VERSION = 1356;
+	public static final int MINIMUM_SPOUTPLUGIN_VERSION = 1093;
+	public static final int MINIMUM_SPOUTCRAFT_VERSION = 1358;
 	
 	public static Map<SpoutPlayer,CustomFurnaceData> datamap = new HashMap<SpoutPlayer, CustomFurnaceData>();
 	public static Map<SpoutPlayer,FurnaceGui> guimap = new HashMap<SpoutPlayer, FurnaceGui>();
@@ -50,7 +50,7 @@ public class ExtraFurnaces extends JavaPlugin {
 		try {
 			if(Integer.parseInt(getServer().getPluginManager().getPlugin("Spout").getDescription().getVersion())<MINIMUM_SPOUTPLUGIN_VERSION) {
 				log.severe("[ExtraFurnaces] Extra Furnaces requires Spout version " + MINIMUM_SPOUTPLUGIN_VERSION + " or newer.");
-				log.severe("[ExtraFurnaces] Extra Furnaces will now disavle itself.");
+				log.severe("[ExtraFurnaces] Extra Furnaces will now disable itself.");
 				getServer().getPluginManager().disablePlugin(this);
 			}
 		} catch(NumberFormatException e) {
@@ -95,11 +95,11 @@ public class ExtraFurnaces extends JavaPlugin {
 	private void registerItems() {
 		Texture texture = new Texture(this,"plugins/ExtraFurnaces/moreFurnaces.png",256,256,16);
 		ironfurnaceoff = new IronFurnace(this, texture, incrementArray(furnaceoff,ironfurnaceincr), false);
-		ironfurnaceon = new IronFurnace(this, texture, incrementArray(furnaceon,ironfurnaceincr), true);
+		ironfurnaceon = new IronFurnace(this, texture, incrementArray(furnaceon,ironfurnaceincr), true).setItemDrop(new SpoutItemStack(ironfurnaceoff, 1));
 		goldfurnaceoff = new GoldFurnace(this, texture, incrementArray(furnaceoff,goldfurnaceincr), false);
-		goldfurnaceon = new GoldFurnace(this, texture, incrementArray(furnaceon,goldfurnaceincr), true);
+		goldfurnaceon = new GoldFurnace(this, texture, incrementArray(furnaceon,goldfurnaceincr), true).setItemDrop(new SpoutItemStack(goldfurnaceoff, 1));
 		diamondfurnaceoff = new DiamondFurnace(this, texture, incrementArray(furnaceoff,diamondfurnaceincr), false);
-		diamondfurnaceon = new DiamondFurnace(this, texture, incrementArray(furnaceon,diamondfurnaceincr), true);
+		diamondfurnaceon = new DiamondFurnace(this, texture, incrementArray(furnaceon,diamondfurnaceincr), true).setItemDrop(new SpoutItemStack(diamondfurnaceoff, 1));
 	}
 	
 	private void registerRecipes() {

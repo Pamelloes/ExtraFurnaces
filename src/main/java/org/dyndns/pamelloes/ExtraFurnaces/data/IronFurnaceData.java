@@ -37,13 +37,15 @@ public class IronFurnaceData extends CustomFurnaceData {
 	@Override
 	@EventHandler
 	public void onServerTick(ServerTickEvent e) {
-		boolean update = update();
-		if(update) {
-			if(furnaceItemStacks[getBurnIndex()] == null && furnaceItemStacks[getResultIndex()] != null) updateRange(getResultIndex() + 1, getResultIndex(), false);
+		boolean update = false;
+		if(update()) {
 			updateRange(getFuelIndex(), getFuelIndex() - 1);
 			updateRange(getBurnIndex(), getBurnIndex() - 1);
 	        updateInventory();
+			update = true;
 		}
+		if (adjustResult(2)) update = true;
+		if (update) updateInventory();
 		updateData();
 	}
 

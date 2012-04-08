@@ -3,6 +3,9 @@ package org.dyndns.pamelloes.ExtraFurnaces.block;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.dyndns.pamelloes.ExtraFurnaces.ExtraFurnaces;
 import org.dyndns.pamelloes.ExtraFurnaces.data.IronFurnaceData;
 import org.dyndns.pamelloes.ExtraFurnaces.gui.FurnaceGui;
@@ -10,12 +13,14 @@ import org.dyndns.pamelloes.ExtraFurnaces.gui.IronFurnaceGui;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.SpoutBlock;
 import org.getspout.spoutapi.block.design.Texture;
+import org.getspout.spoutapi.material.MaterialData;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class IronFurnace extends CustomFurnace {
 
 	public IronFurnace(ExtraFurnaces plugin, Texture texture, int[] ids, boolean on) {
 		super(plugin, "Iron Furnace", texture, ids, on);
+		this.setHardness(MaterialData.ironBlock.getHardness());
 	}
 	
 	@Override
@@ -46,5 +51,11 @@ public class IronFurnace extends CustomFurnace {
 	@Override
 	public FurnaceGui getGui(SpoutPlayer player) {
 		return new IronFurnaceGui(player);
+	}
+	
+	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBlockBreak(BlockBreakEvent e) {
+		super.onBlockBreak(e);
 	}
 }

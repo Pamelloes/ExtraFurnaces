@@ -37,13 +37,14 @@ public class DiamondFurnaceData extends CustomFurnaceData {
 	@Override
 	@EventHandler
 	public void onServerTick(ServerTickEvent e) {
-		boolean update = update();
-		if(update) {
-			if(furnaceItemStacks[getBurnIndex()] == null && furnaceItemStacks[getResultIndex()] != null) updateRange(getResultIndex() + 8, getResultIndex(), false);
+		boolean update = false;
+		if(update()) {
 			updateRange(getFuelIndex(), getFuelIndex() - 6);
 			updateRange(getBurnIndex(), getBurnIndex() - 6);
-	        updateInventory();
+			update = true;
 		}
+		if (adjustResult(9)) update = true;
+		if (update) updateInventory();
 		updateData();
 	}
 

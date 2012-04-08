@@ -157,7 +157,7 @@ public abstract class InventoryGui extends InventoryView {
 			if(is == null) inventory.clear(id);
 			else inventory.setItem(id, is);
 		} else {
-			ExtraFurnaces.datamap.get(sp).setInventorySlotContents(id - 36, is);
+			ExtraFurnaces.datamap.get(sp).setInventorySlotContents(id - 36, is, sp);
 		}
 	}
 	

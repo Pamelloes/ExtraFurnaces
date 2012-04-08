@@ -1,14 +1,27 @@
 package org.dyndns.pamelloes.ExtraFurnaces.block;
 
+import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import net.minecraft.server.EnumToolMaterial;
+import net.minecraft.server.Item;
+import net.minecraft.server.ItemTool;
+
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.dyndns.pamelloes.ExtraFurnaces.ExtraFurnaces;
 import org.dyndns.pamelloes.ExtraFurnaces.data.CustomFurnaceData;
 import org.dyndns.pamelloes.ExtraFurnaces.gui.FurnaceGui;
@@ -25,15 +38,20 @@ import org.getspout.spoutapi.gui.GenericPopup;
 import org.getspout.spoutapi.gui.GenericTexture;
 import org.getspout.spoutapi.gui.PopupScreen;
 import org.getspout.spoutapi.gui.RenderPriority;
+import org.getspout.spoutapi.material.CustomBlock;
+import org.getspout.spoutapi.material.MaterialData;
 import org.getspout.spoutapi.material.block.GenericCubeCustomBlock;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
-public abstract class CustomFurnace extends GenericCubeCustomBlock {
+public abstract class CustomFurnace extends GenericCubeCustomBlock implements Listener {
 	protected ExtraFurnaces plugin;
 	
 	public CustomFurnace(ExtraFurnaces plugin, String name, Texture tex, int[] ids, boolean on) {
 		super(plugin, (on ? "Burning " : "") + name, on ? Material.BURNING_FURNACE.getId() : Material.FURNACE.getId(), 2, new GenericCubeBlockDesign(plugin, tex, ids));
 		this.plugin=plugin;
+		setFriction(on ? MaterialData.burningfurnace.getFriction() : MaterialData.furnace.getFriction());
+		setLightLevel(on ? MaterialData.burningfurnace.getLightLevel() : MaterialData.furnace.getLightLevel());
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 	
 	public abstract FurnaceGui getGui(SpoutPlayer player);
@@ -57,14 +75,15 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
 	@Override
     public void onBlockDestroyed(World world, int x, int y, int z) {
 		((CraftWorld) world).getHandle().q(x, y, z);
-		if(((SpoutBlock)world.getBlockAt(x, y, z)).getCustomBlock() instanceof CustomFurnace) return;
 		CustomFurnaceData dat = (CustomFurnaceData) SpoutManager.getChunkDataManager().getBlockData("ExtraFurnaces", world, x, y, z);
 		if(dat==null)  return;
+		if(dat.replace) return;
 		Iterator<Entry<SpoutPlayer,CustomFurnaceData>> iter = ExtraFurnaces.datamap.entrySet().iterator();
 		while(iter.hasNext()) {
 			Entry<SpoutPlayer,CustomFurnaceData> entry = iter.next();
 			if(entry.getValue().equals(dat)) {
 				entry.getKey().getMainScreen().closePopup();
+				ExtraFurnaces.guimap.remove(entry.getKey());
 				iter.remove();
 			}
 		}
@@ -72,6 +91,47 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
 		Location loc = new Location(world,x,y,z);
 		for(int i = 0; i < dat.getSize(); i++) if(dat.getStackInSlot(i)!=null) world.dropItem(loc, dat.getStackInSlot(i));
         HandlerList.unregisterAll(dat);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBlockBreak(BlockBreakEvent event) {
+		if (event.isCancelled()) {
+			return;
+		}
+		
+		SpoutBlock block = (SpoutBlock) event.getBlock();
+
+		SpoutPlayer player = (SpoutPlayer)event.getPlayer();
+
+		if (block.isCustomBlock()) {
+			CustomBlock material = block.getCustomBlock();
+			if (material != null && material instanceof CustomFurnace) {
+				if (player.getGameMode() == GameMode.SURVIVAL && usingToolLevel(player, 2)) {
+					block.getWorld().dropItem(block.getLocation(), material.getItemDrop());
+				}
+				block.setTypeId(0);
+				SpoutManager.getMaterialManager().removeBlockOverride(block);
+				event.setCancelled(true);
+			}
+		}
+	}
+
+	
+	public boolean usingToolLevel(LivingEntity living, int level) {
+		if(!(living instanceof HumanEntity)) return false;
+		CraftItemStack is =  (CraftItemStack) ((HumanEntity) living).getItemInHand();
+		if(is == null) return false;
+		Item item = is.getHandle().getItem();
+		if(!(item instanceof ItemTool)) return false;
+		ItemTool it = (ItemTool) item;
+		EnumToolMaterial tm = null;
+		try {
+			Field f = ItemTool.class.getDeclaredField("b");
+			f.setAccessible(true);
+			tm = (EnumToolMaterial) f.get(it);
+		} catch (Exception e) { e.printStackTrace(); }
+		if(tm == null) return false;
+		return tm.d() >= level;
 	}
 	
 	private boolean validateClient(SpoutPlayer player) {
@@ -87,8 +147,11 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
 			player.sendMessage(ChatColor.RED + "");
 			return false;
 		}
-		int build = 10000;//player.getBuildVersion();
-		if(build < ExtraFurnaces.MINIMUM_SPOUTCRAFT_VERSION) {
+		int build = -1;
+		try {
+			build = Integer.parseInt(player.getVersionString());
+		} catch(NumberFormatException e) {}
+		if(build < ExtraFurnaces.MINIMUM_SPOUTCRAFT_VERSION && build >= 0) {
 			// Window Title
 			GenericLabel wintitle = new GenericLabel("Spoutcraft outdated!");
 			wintitle.setX(158).setY(25);
@@ -103,32 +166,32 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
 			contitle.setTextColor(new Color(1.0f,0.3f,0.3f));
 			
 			// Content
-			GenericLabel content1 = new GenericLabel("The ExtraFurnaces addon (which allows you to use");
+			GenericLabel content1 = new GenericLabel("The ExtraFurnaces addon (which allows you to");
 			content1.setX(91).setY(80);
 			content1.setPriority(RenderPriority.Lowest);
 			content1.setWidth(-1).setHeight(-1);
-			GenericLabel content2 = new GenericLabel("the furnace) requires that you are using Spout-");
+			GenericLabel content2 = new GenericLabel("use the furnace) requires that you are using");
 			content2.setX(91).setY(93);
 			content2.setPriority(RenderPriority.Lowest);
 			content2.setWidth(-1).setHeight(-1);
-			GenericLabel content3 = new GenericLabel("craft " + ExtraFurnaces.MINIMUM_SPOUTCRAFT_VERSION + " or newer. If you are using an older");
+			GenericLabel content3 = new GenericLabel(" Spoutcraft " + ExtraFurnaces.MINIMUM_SPOUTCRAFT_VERSION + " or newer. If you are using an");
 			content3.setX(91).setY(106);
 			content3.setPriority(RenderPriority.Lowest);
 			content3.setWidth(-1).setHeight(-1);
-			GenericLabel content4 = new GenericLabel("build then your client will be missing important");
+			GenericLabel content4 = new GenericLabel("older build then your client will be missing");
 			content4.setX(91).setY(119);
 			content4.setPriority(RenderPriority.Lowest);
 			content4.setWidth(-1).setHeight(-1);
-			GenericLabel content5 = new GenericLabel("features that will render the furnace unusable.");
+			GenericLabel content5 = new GenericLabel("important features that will render the furnace unusable.");
 			content5.setX(91).setY(132);
 			content5.setPriority(RenderPriority.Lowest);
 			content5.setWidth(-1).setHeight(-1);
-			GenericLabel content6 = new GenericLabel("You can update Spoutcraft in the \"Options\" section");
+			GenericLabel content6 = new GenericLabel("You can update Spoutcraft in the \"Options\"");
 			content6.setX(91).setY(158);
 			content6.setPriority(RenderPriority.Lowest);
 			content6.setWidth(-1).setHeight(-1);
 			content6.setTextColor(new Color(1.0f,0.3f,0.3f));
-			GenericLabel content7 = new GenericLabel("of the launcher!");
+			GenericLabel content7 = new GenericLabel("section of the launcher!");
 			content7.setX(91).setY(171);
 			content7.setPriority(RenderPriority.Lowest);
 			content7.setWidth(-1).setHeight(-1);
@@ -165,16 +228,4 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock {
 		}
 		return true;
 	}
-	
-	/*@Override
-	public void onBlockPlace(World w, int x, int y, int z, LivingEntity e) {
-		double d = (double)((e.getLocation().getYaw() * 4F) / 360F) + 0.5D;
-		int i = (int)d;
-		i = ((d >= i) ? i : i - 1);
-		i &= 3;
-
-		if (i == 0) w.getBlockAt(x, y, z).setData((byte) 2);
-		else if (i == 2) w.getBlockAt(x, y, z).setData((byte) 3);
-		else if (i == 3) w.getBlockAt(x, y, z).setData((byte) 4);
-	}*/
 }

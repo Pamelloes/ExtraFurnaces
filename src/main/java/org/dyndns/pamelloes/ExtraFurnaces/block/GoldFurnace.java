@@ -3,6 +3,9 @@ package org.dyndns.pamelloes.ExtraFurnaces.block;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.dyndns.pamelloes.ExtraFurnaces.ExtraFurnaces;
 import org.dyndns.pamelloes.ExtraFurnaces.data.GoldFurnaceData;
 import org.dyndns.pamelloes.ExtraFurnaces.gui.FurnaceGui;
@@ -46,5 +49,11 @@ public class GoldFurnace extends CustomFurnace {
 	@Override
 	public FurnaceGui getGui(SpoutPlayer player) {
 		return new GoldFurnaceGui(player);
+	}
+	
+	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBlockBreak(BlockBreakEvent e) {
+		super.onBlockBreak(e);
 	}
 }

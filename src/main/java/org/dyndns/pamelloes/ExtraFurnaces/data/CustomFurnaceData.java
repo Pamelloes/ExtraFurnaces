@@ -31,6 +31,7 @@ import org.dyndns.pamelloes.ExtraFurnaces.block.CraftSpecialBlock;
 import org.dyndns.pamelloes.ExtraFurnaces.block.CustomFurnaceBlockState;
 import org.dyndns.pamelloes.ExtraFurnaces.gui.FurnaceGui;
 import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.block.SpoutBlock;
 import org.getspout.spoutapi.event.spout.ServerTickEvent;
 import org.getspout.spoutapi.material.CustomBlock;
 import org.getspout.spoutapi.player.SpoutPlayer;
@@ -50,6 +51,9 @@ public abstract class CustomFurnaceData extends CraftInventory implements Serial
 
     /** The number of ticks that the current item has been cooking for */
     public int furnaceCookTime;
+    
+    /** Whether or not the block associated with this instance is being replaced/ */
+    public boolean replace = false;
     
     private int x,y,z;
     private UUID world;
@@ -85,7 +89,7 @@ public abstract class CustomFurnaceData extends CraftInventory implements Serial
     /**
      * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
      */
-    public void setInventorySlotContents(int slot, ItemStack is) {
+    public void setInventorySlotContents(int slot, ItemStack is, final SpoutPlayer player) {
         furnaceItemStacks[slot] = is;
 
         if (is != null && is.getAmount() > 64) is.setAmount(64);
@@ -137,6 +141,7 @@ public abstract class CustomFurnaceData extends CraftInventory implements Serial
      * @return true if there has been a change in the inventory.
      */
     public boolean update() {
+    	if(((SpoutBlock) Bukkit.getWorld(world).getBlockAt(x, y, z)).getCustomBlock() == null) return false;
     	if(Bukkit.getWorld(world).getBlockAt(x, y, z).getData() != 3) Bukkit.getWorld(world).getBlockAt(x, y, z).setData((byte) 3);
         boolean flag = furnaceBurnTime > 0;
         boolean flag1 = false;
@@ -179,13 +184,31 @@ public abstract class CustomFurnaceData extends CraftInventory implements Serial
 
 		if (flag != (furnaceBurnTime > 0)) {
 			flag1 = true;
+			replace = true;
 			CustomBlock block = getBlock(isBurning());
 			Bukkit.getWorld(world).getBlockAt(x, y, z).setTypeIdAndData(block.getBlockId(), (byte) block.getBlockData(), true);
 			SpoutManager.getMaterialManager().overrideBlock(Bukkit.getWorld(world), x, y, z, block);
     		SpoutManager.getChunkDataManager().setBlockData("ExtraFurnaces", Bukkit.getWorld(world), x, y, z, CustomFurnaceData.this);
+    		replace = false;
 		}
 
         return flag1;
+    }
+    
+    protected boolean adjustResult(int length) {
+    	if (furnaceBurnTime <= 0) return false;
+        if (furnaceItemStacks[getBurnIndex()] == null) return false;
+        ItemStack itemstack = getResult(furnaceItemStacks[getBurnIndex()]);
+        if(itemstack == null) return false;
+        if(furnaceItemStacks[getResultIndex()] == null) return false;
+        if(!furnaceItemStacks[getResultIndex()].getType().equals(itemstack.getType())) {
+        	updateRange(getResultIndex() + length - 1, getResultIndex(), false);
+        	return true;
+        }
+        if (furnaceItemStacks[getResultIndex()].getAmount() + itemstack.getAmount() <= 64 && furnaceItemStacks[getResultIndex()].getAmount() < furnaceItemStacks[getResultIndex()].getMaxStackSize()) return false;
+        if (furnaceItemStacks[getResultIndex()].getAmount() + itemstack.getAmount() <= itemstack.getMaxStackSize()) return false;
+    	updateRange(getResultIndex() + length - 1, getResultIndex(), false);
+    	return true;
     }
 
     /**
@@ -446,6 +469,7 @@ public abstract class CustomFurnaceData extends CraftInventory implements Serial
 	@Override
 	public void setItem(int id, ItemStack is) {
 		furnaceItemStacks[id] = (is == null || is.getAmount() == 0 || is.getTypeId() == 0) ? null : is;
+		updateInventory();
 	}
 	
 	@Override
@@ -464,6 +488,7 @@ public abstract class CustomFurnaceData extends CraftInventory implements Serial
 	            furnaceItemStacks[i] = contents[i];
 	        }
 	    }
+		updateInventory();
 	}
 	
 	public ItemStack getFuel() {
