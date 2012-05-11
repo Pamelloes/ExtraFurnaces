@@ -32,7 +32,7 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class ExtraFurnaces extends JavaPlugin {
 	public static final int MINIMUM_SPOUTPLUGIN_VERSION = 1093;
-	public static final int MINIMUM_SPOUTCRAFT_VERSION = 1358;
+	public static final int MINIMUM_SPOUTCRAFT_VERSION = 0;//1358;
 	
 	public static Map<SpoutPlayer,CustomFurnaceData> datamap = new HashMap<SpoutPlayer, CustomFurnaceData>();
 	public static Map<SpoutPlayer,FurnaceGui> guimap = new HashMap<SpoutPlayer, FurnaceGui>();
@@ -52,6 +52,7 @@ public class ExtraFurnaces extends JavaPlugin {
 				log.severe("[ExtraFurnaces] Extra Furnaces requires Spout version " + MINIMUM_SPOUTPLUGIN_VERSION + " or newer.");
 				log.severe("[ExtraFurnaces] Extra Furnaces will now disable itself.");
 				getServer().getPluginManager().disablePlugin(this);
+				return;
 			}
 		} catch(NumberFormatException e) {
 			log.warning("[ExtraFurnaces] Could not identify Spout version, incompatibilities may arise.");
@@ -59,7 +60,7 @@ public class ExtraFurnaces extends JavaPlugin {
 		extractFile("moreFurnaces.png",true);
 		extractFile("ironfurnace.png",true);
 		extractFile("goldfurnace.png",true);
-		extractFile("diamondfurnace.png",true);
+		extractFile("diamondfurnace.png",true); 
 		registerItems();
 		registerRecipes();
 		getServer().getPluginManager().registerEvents(new Listener() {

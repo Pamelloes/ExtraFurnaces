@@ -7,6 +7,7 @@ import org.getspout.spoutapi.gui.Slot;
 public class InventorySlot extends GenericSlot {
 	private boolean readonly = false;
 	private InventoryGui gui;
+	private int timer = 0;
 	
 	public InventorySlot(int xpos, int ypos, InventoryGui gui) {
 		this.gui = gui;
@@ -53,5 +54,20 @@ public class InventorySlot extends GenericSlot {
 	public Slot setItem(ItemStack is, boolean update) {
 		if(update) gui.updateContents(this, is);
 		return super.setItem(is);
+	}
+	
+	@Override
+	public void onTick() {
+		super.onTick();
+		timer=(timer+1)%10;
+		if(timer == 0) {
+			int raw = gui.getIndex(this);
+			int slot = gui.convertSlot(raw);
+			ItemStack contents = null;
+			if(slot == raw) contents = gui.getPlayer().getInventory().getItem(slot);
+			else contents = gui.getBottomInventory().getItem(slot - 9);
+			if(getItem().equals(contents)) return;
+			setItem(contents);
+		}
 	}
 }

@@ -16,7 +16,6 @@ import net.minecraft.server.FurnaceRecipes;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Furnace;
-import org.bukkit.craftbukkit.inventory.CraftInventory;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
@@ -30,6 +29,7 @@ import org.dyndns.pamelloes.ExtraFurnaces.ExtraFurnaces;
 import org.dyndns.pamelloes.ExtraFurnaces.block.CraftSpecialBlock;
 import org.dyndns.pamelloes.ExtraFurnaces.block.CustomFurnaceBlockState;
 import org.dyndns.pamelloes.ExtraFurnaces.gui.FurnaceGui;
+import org.getspout.spoutapi.Spout;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.SpoutBlock;
 import org.getspout.spoutapi.event.spout.ServerTickEvent;
@@ -37,8 +37,8 @@ import org.getspout.spoutapi.material.CustomBlock;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 @SuppressWarnings("serial")
-public abstract class CustomFurnaceData extends CraftInventory implements Serializable, Listener, FurnaceInventory {
-    protected transient ItemStack furnaceItemStacks[];
+public abstract class CustomFurnaceData extends CraftInventoryWrapper implements Serializable, Listener, FurnaceInventory {
+	protected transient ItemStack furnaceItemStacks[];
 	protected transient List<SpoutPlayer> players = new ArrayList<SpoutPlayer>();
 
     /** The number of ticks that the furnace will keep burning */
@@ -57,9 +57,10 @@ public abstract class CustomFurnaceData extends CraftInventory implements Serial
     
     private int x,y,z;
     private UUID world;
+    
+    private int furnacerot = -1;
 
     public CustomFurnaceData(int slots, UUID world, int x, int y, int z) {
-    	super(null);
         furnaceItemStacks = new ItemStack[slots];
         furnaceBurnTime = 0;
         currentItemBurnTime = 0;
@@ -142,7 +143,23 @@ public abstract class CustomFurnaceData extends CraftInventory implements Serial
      */
     public boolean update() {
     	if(((SpoutBlock) Bukkit.getWorld(world).getBlockAt(x, y, z)).getCustomBlock() == null) return false;
-    	if(Bukkit.getWorld(world).getBlockAt(x, y, z).getData() != 3) Bukkit.getWorld(world).getBlockAt(x, y, z).setData((byte) 3);
+    	if(furnacerot == -1) {
+    		switch ( Spout.getServer().getWorld(world).getChunkAt(x, y, z).getCustomBlockRotation(x, y, z) ) {
+    		case 0:
+    			furnacerot = 3;
+    			break;
+    		case 3:
+    			furnacerot = 4;
+    			break;
+    		case 2:
+    			furnacerot = 2;
+    			break;
+    		case 1:
+    			furnacerot = 5;
+    			break;
+    		}
+    	}
+    	if(Bukkit.getWorld(world).getBlockAt(x, y, z).getData() != furnacerot) Bukkit.getWorld(world).getBlockAt(x, y, z).setData((byte) furnacerot);
         boolean flag = furnaceBurnTime > 0;
         boolean flag1 = false;
 
@@ -186,9 +203,9 @@ public abstract class CustomFurnaceData extends CraftInventory implements Serial
 			flag1 = true;
 			replace = true;
 			CustomBlock block = getBlock(isBurning());
-			Bukkit.getWorld(world).getBlockAt(x, y, z).setTypeIdAndData(block.getBlockId(), (byte) block.getBlockData(), true);
-			SpoutManager.getMaterialManager().overrideBlock(Bukkit.getWorld(world), x, y, z, block);
-    		SpoutManager.getChunkDataManager().setBlockData("ExtraFurnaces", Bukkit.getWorld(world), x, y, z, CustomFurnaceData.this);
+			Bukkit.getWorld(world).getBlockAt(x, y, z).setTypeIdAndData(block.getBlockId(), (byte) furnacerot, true);
+			SpoutManager.getMaterialManager().overrideBlock(Bukkit.getWorld(world), x, y, z, block, Spout.getServer().getWorld(world).getChunkAt(x, y, z).getCustomBlockRotation(x, y, z));
+    		SpoutManager.getChunkDataManager().setBlockData("ExtraFurnaces", Bukkit.getWorld(world), x, y, z, this);
     		replace = false;
 		}
 

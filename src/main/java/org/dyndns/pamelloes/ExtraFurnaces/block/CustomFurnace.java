@@ -47,7 +47,7 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock implements Li
 	protected ExtraFurnaces plugin;
 	
 	public CustomFurnace(ExtraFurnaces plugin, String name, Texture tex, int[] ids, boolean on) {
-		super(plugin, (on ? "Burning " : "") + name, on ? Material.BURNING_FURNACE.getId() : Material.FURNACE.getId(), 2, new GenericCubeBlockDesign(plugin, tex, ids));
+		super(plugin, (on ? "Burning " : "") + name, on ? Material.BURNING_FURNACE.getId() : Material.FURNACE.getId(), 2, new GenericCubeBlockDesign(plugin, tex, ids), true);
 		this.plugin=plugin;
 		setFriction(on ? MaterialData.burningfurnace.getFriction() : MaterialData.furnace.getFriction());
 		setLightLevel(on ? MaterialData.burningfurnace.getLightLevel() : MaterialData.furnace.getLightLevel());
@@ -103,16 +103,14 @@ public abstract class CustomFurnace extends GenericCubeCustomBlock implements Li
 
 		SpoutPlayer player = (SpoutPlayer)event.getPlayer();
 
-		if (block.isCustomBlock()) {
-			CustomBlock material = block.getCustomBlock();
-			if (material != null && material instanceof CustomFurnace) {
-				if (player.getGameMode() == GameMode.SURVIVAL && usingToolLevel(player, 2)) {
-					block.getWorld().dropItem(block.getLocation(), material.getItemDrop());
-				}
-				block.setTypeId(0);
-				SpoutManager.getMaterialManager().removeBlockOverride(block);
-				event.setCancelled(true);
+		CustomBlock material = block.getCustomBlock();
+		if (material != null && material instanceof CustomFurnace) {
+			if (player.getGameMode() == GameMode.SURVIVAL && usingToolLevel(player, 2)) {
+				block.getWorld().dropItem(block.getLocation(), material.getItemDrop());
 			}
+			block.setTypeId(0);
+			SpoutManager.getMaterialManager().removeBlockOverride(block);
+			event.setCancelled(true);
 		}
 	}
 

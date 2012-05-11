@@ -8,7 +8,7 @@ import org.getspout.spoutapi.event.spout.ServerTickEvent;
 import org.getspout.spoutapi.material.CustomBlock;
 
 public class GoldFurnaceData extends CustomFurnaceData {
-	private static final long serialVersionUID = -3726681582102483401L;
+	private static final long serialVersionUID = 6470491086115887831L;
 
 	public GoldFurnaceData(UUID world, int x, int y, int z) {
 		super(13, world, x, y, z);

@@ -8,7 +8,7 @@ import org.getspout.spoutapi.event.spout.ServerTickEvent;
 import org.getspout.spoutapi.material.CustomBlock;
 
 public class IronFurnaceData extends CustomFurnaceData {
-	private static final long serialVersionUID = -3726681582102483401L;
+	private static final long serialVersionUID = -7918321645452718576L;
 
 	public IronFurnaceData(UUID world, int x, int y, int z) {
 		super(6, world, x, y, z);

@@ -9,7 +9,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -101,6 +100,26 @@ public abstract class InventoryGui extends InventoryView {
 		return result;
 	}
 	
+	/**
+	 * Gets the index of a slot.
+	 * @param slot The slot who's index to get.
+	 * @return The slot's index.
+	 */
+	public int getIndex(InventorySlot slot) {
+		return slots.indexOf(slot);
+	}
+	
+	/**
+	 * Get the contents of an inventory slot.
+	 * @param slot The slot who's contents to get.
+	 * @return The slot's contents.
+	 */
+	public ItemStack getContents(InventorySlot slot) {
+		int id = slots.indexOf(slot);
+		return id >= 0 ? getContents(slot) : null;
+		
+	}
+	
 	public ItemStack getContents(int id) {
 		if(id < 36) return inventory.getItem(id);
 		return slots.get(id - 36).getItem();
@@ -188,6 +207,10 @@ public abstract class InventoryGui extends InventoryView {
 	public int getGuiHeight() {
 		return height;
 	}
+	public void setGuiSize(int width, int height) {
+		this.width = width;
+		this.height = height;
+	}
 	
 	public void onClose() {
 		InventoryCloseEvent icv = new InventoryCloseEvent(this);
@@ -211,11 +234,6 @@ public abstract class InventoryGui extends InventoryView {
 	@Override
 	public HumanEntity getPlayer() {
 		return sp;
-	}
-
-	@Override
-	public InventoryType getType() {
-		return InventoryType.FURNACE;
 	}
 	
 	public void onTick() {}

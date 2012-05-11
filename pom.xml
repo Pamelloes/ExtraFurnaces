@@ -4,7 +4,7 @@
 
   <groupId>org.dyndns.pamelloes</groupId>
   <artifactId>ExtraFurnaces</artifactId>
-  <version>1.2.3-SNAPSHOT</version>
+  <version>1.3-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>ExtraFurnaces</name>
@@ -27,27 +27,10 @@
     	<scope>compile</scope>
     </dependency>
     <dependency>
-    	<groupId>org.spoutcraft</groupId>
-    	<artifactId>spoutcraftapi</artifactId>
-    	<version>dev-SNAPSHOT</version>
-    	<scope>compile</scope>
-    </dependency>
-    <dependency>
-    	<groupId>org.spoutcraft</groupId>
-    	<artifactId>spoutcraft</artifactId>
-    	<version>dev-SNAPSHOT</version>
-    	<scope>compile</scope>
-    </dependency>
-    <dependency>
     	<groupId>org.bukkit</groupId>
     	<artifactId>craftbukkit</artifactId>
-    	<version>1.2.4-R1.1-SNAPSHOT</version>
+    	<version>1.2.5-R1.3-SNAPSHOT</version>
     	<scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.lwjgl.lwjgl</groupId>
-  	  <artifactId>lwjgl</artifactId>
- 	  <version>2.8.2</version>
     </dependency>
   </dependencies>
   <repositories>
@@ -60,6 +43,4 @@
 	  <url>http://repo.spout.org/</url>
 	</repository>
   </repositories>
-  <modules>
-  </modules>
 </project>

@@ -1,5 +1,6 @@
 package org.dyndns.pamelloes.ExtraFurnaces.gui;
 
+import org.bukkit.event.inventory.InventoryType;
 import org.dyndns.pamelloes.ExtraFurnaces.ExtraFurnaces;
 import org.getspout.spoutapi.gui.Color;
 import org.getspout.spoutapi.gui.GenericLabel;
@@ -90,5 +91,10 @@ public abstract class FurnaceGui extends InventoryGui {
 	@Override
 	public Widget[] getWidgets() {
 		return new Widget[]{ name, inv, flame, arrow };
+	}
+
+	@Override
+	public InventoryType getType() {
+		return InventoryType.FURNACE;
 	}
 }
