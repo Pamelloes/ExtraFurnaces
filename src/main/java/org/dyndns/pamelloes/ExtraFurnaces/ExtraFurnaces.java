@@ -31,8 +31,8 @@ import org.getspout.spoutapi.material.MaterialData;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class ExtraFurnaces extends JavaPlugin {
-	public static final int MINIMUM_SPOUTPLUGIN_VERSION = 1093;
-	public static final int MINIMUM_SPOUTCRAFT_VERSION = 0;//1358;
+	public static final int MINIMUM_SPOUTPLUGIN_VERSION = 1179;
+	public static final int MINIMUM_SPOUTCRAFT_VERSION = 1466;
 	
 	public static Map<SpoutPlayer,CustomFurnaceData> datamap = new HashMap<SpoutPlayer, CustomFurnaceData>();
 	public static Map<SpoutPlayer,FurnaceGui> guimap = new HashMap<SpoutPlayer, FurnaceGui>();
